@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FingCards · Repasos por materia</title>
+<style>
+:root{
+  --panel:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e5e9f0; --soft:#f4f6fb;
+  --accent:#4f46e5; --bg:#eef2f7; --card-sh:0 12px 34px rgba(15,23,42,.10);
+  --hero1:#0b1220; --hero2:#1e293b; --chip:#eef2ff; --chip-ink:#4338ca;
+  --link:#4f46e5;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --panel:#111827; --ink:#e5e7eb; --muted:#94a3b8; --line:#273244; --soft:#0f172a;
+    --bg:#0b1220; --card-sh:0 12px 34px rgba(0,0,0,.45);
+    --hero1:#050912; --hero2:#111c33; --chip:#1e293b; --chip-ink:#c7d2fe; --link:#a5b4fc;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink); background:var(--bg); min-height:100vh;
+}
+a{color:var(--link);text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px 80px}
+
+/* ---------- hero ---------- */
+.hero{
+  background:linear-gradient(160deg,var(--hero1),var(--hero2));
+  color:#fff;border-radius:0 0 26px 26px;padding:28px 0 30px;margin-bottom:26px;
+  box-shadow:0 20px 50px rgba(2,6,23,.35);
+}
+.hero .wrap{padding-bottom:0}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:44px;height:44px;border-radius:13px;flex:0 0 auto;display:grid;place-items:center;
+  font-size:24px;background:linear-gradient(135deg,#4f46e5,#0891b2);box-shadow:0 8px 22px rgba(79,70,229,.5)}
+.brand h1{font-size:26px;margin:0;letter-spacing:-.5px}
+.brand p{margin:2px 0 0;color:#c7d2fe;font-size:13.5px}
+.hero-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.hstat{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);
+  border-radius:13px;padding:10px 15px;min-width:96px}
+.hstat b{display:block;font-size:22px;line-height:1.1}
+.hstat span{font-size:10.5px;color:#c7d2fe;text-transform:uppercase;letter-spacing:.6px}
+
+/* ---------- search & breadcrumb ---------- */
+.searchbar{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.searchbar input{
+  flex:1;font:inherit;font-size:15px;padding:12px 15px;border-radius:13px;
+  border:1px solid var(--line);background:var(--panel);color:var(--ink);box-shadow:var(--card-sh)}
+.searchbar input::placeholder{color:var(--muted)}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted);margin-bottom:16px;flex-wrap:wrap}
+.crumb a{color:var(--muted);font-weight:600}
+.crumb a:hover{color:var(--ink)}
+.crumb .sep{opacity:.5}
+.crumb b{color:var(--ink)}
+
+/* ---------- section titles ---------- */
+.sec-title{font-size:13px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);
+  font-weight:800;margin:26px 2px 12px}
+
+/* ---------- materia grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.mcard{
+  --a:var(--accent);
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:var(--card-sh);cursor:pointer;transition:transform .14s ease,box-shadow .14s ease;
+  display:flex;flex-direction:column}
+.mcard:hover{transform:translateY(-4px);box-shadow:0 20px 46px rgba(15,23,42,.18)}
+.mcard .bar{height:6px;background:var(--a)}
+.mcard .body{padding:18px 18px 16px;display:flex;flex-direction:column;gap:9px;height:100%}
+.mcard .ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:24px;
+  background:color-mix(in srgb,var(--a) 15%,transparent)}
+.mcard h3{margin:2px 0 0;font-size:18px;letter-spacing:-.3px}
+.mcard .sig{font-size:11.5px;font-weight:800;letter-spacing:.5px;color:var(--a)}
+.mcard .desc{font-size:13.5px;color:var(--muted);line-height:1.5;margin:0}
+.mcard .foot{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;padding-top:10px}
+
+/* ---------- pills / counters ---------- */
+.pill{font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap;
+  background:var(--chip);color:var(--chip-ink);border:1px solid transparent}
+.pill.type-opcion-multiple{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+.pill.type-teorico{background:#ecfeff;color:#0e7490;border-color:#a5f3fc}
+@media (prefers-color-scheme: dark){
+  .pill.type-opcion-multiple{background:#3a1d09;color:#fdba74;border-color:#7c3a10}
+  .pill.type-teorico{background:#082f36;color:#67e8f9;border-color:#155e6b}
+}
+.count{font-size:11.5px;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:5px}
+
+/* ---------- semester + resource ---------- */
+.sem{margin-bottom:22px}
+.sem h2{font-size:16px;margin:0 0 12px;letter-spacing:-.2px;display:flex;align-items:center;gap:9px}
+.sem h2 .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.rcard{
+  background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--card-sh);
+  padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;
+  transition:transform .12s ease,border-color .12s ease}
+.rcard:hover{transform:translateX(3px);border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.rcard .rico{width:42px;height:42px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;font-size:20px;
+  background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.rcard .rmain{flex:1;min-width:0}
+.rcard .rtitle{font-size:15.5px;font-weight:700;margin:0 0 5px;letter-spacing:-.2px}
+.rcard .rmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rcard .rnote{font-size:12px;color:var(--muted)}
+.rcard .go{flex:0 0 auto;color:var(--muted);font-size:20px;font-weight:700}
+.rcard:hover .go{color:var(--accent)}
+
+/* ---------- empty / footer ---------- */
+.empty{text-align:center;color:var(--muted);padding:50px 20px;font-size:15px}
+.materia-head{display:flex;align-items:center;gap:14px;margin:6px 0 4px}
+.materia-head .ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:27px;
+  background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.materia-head h1{font-size:25px;margin:0;letter-spacing:-.4px}
+.materia-head p{margin:3px 0 0;color:var(--muted);font-size:14px;max-width:640px}
+footer{border-top:1px solid var(--line);margin-top:40px;padding-top:20px;color:var(--muted);font-size:13px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{font-weight:600}
+@media(max-width:560px){
+  .brand h1{font-size:22px}
+  .materia-head h1{font-size:21px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">🎴</div>
+      <div>
+        <h1>FingCards</h1>
+        <p>Repasos teóricos de las materias de Facultad de Ingeniería — todo estático, todo por git.</p>
+      </div>
+    </div>
+    <div class="hero-stats" id="heroStats"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="view"></div>
+
+  <footer>
+    <span>Hecho para estudiar mejor · sin backend, 100% estático.</span>
+    <a href="https://github.com/nachodla/FingCards" target="_blank" rel="noopener">Editá el contenido en GitHub ↗</a>
+  </footer>
+</div>
+
+<!-- Catálogo: primero el manifest, luego el loader inyecta cada data/<materia>.js -->
+<script src="data/manifest.js"></script>
+<script>
+(function(){
+  "use strict";
+  window.FING = window.FING || {};
+  FING.subjects = [];
+  FING.registerSubject = function(s){ FING.subjects.push(s); };
+
+  var $view = document.getElementById("view");
+  var $stats = document.getElementById("heroStats");
+  var query = "";
+
+  var TYPE_LABEL = { "opcion-multiple":"Opción múltiple", "teorico":"Teórico · flashcards" };
+
+  function esc(t){ return (t||"").replace(/[&<>"]/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+  function countPreguntas(sub){
+    var n=0; (sub.semestres||[]).forEach(function(sem){
+      (sem.recursos||[]).forEach(function(r){ n += (r.preguntas||0); }); });
+    return n;
+  }
+  function countRecursos(sub){
+    var n=0; (sub.semestres||[]).forEach(function(sem){ n += (sem.recursos||[]).length; });
+    return n;
+  }
+  function matches(sub){
+    if(!query) return true;
+    var hay = (sub.nombre+" "+sub.sigla+" "+sub.descripcion).toLowerCase();
+    (sub.semestres||[]).forEach(function(sem){
+      hay += " "+sem.nombre;
+      (sem.recursos||[]).forEach(function(r){ hay += " "+r.titulo+" "+(r.nota||""); });
+    });
+    return hay.toLowerCase().indexOf(query.toLowerCase()) >= 0;
+  }
+
+  function renderStats(){
+    var mats = FING.subjects.length;
+    var recs = FING.subjects.reduce(function(a,s){return a+countRecursos(s);},0);
+    var qs = FING.subjects.reduce(function(a,s){return a+countPreguntas(s);},0);
+    $stats.innerHTML =
+      stat(mats,"materias") + stat(recs,"repasos") + stat(qs,"preguntas");
+  }
+  function stat(n,label){ return '<div class="hstat"><b>'+n+'</b><span>'+label+'</span></div>'; }
+
+  function searchbar(){
+    return '<div class="searchbar"><input id="q" type="search" '+
+      'placeholder="Buscar materia, tema o parcial…" value="'+esc(query)+'"></div>';
+  }
+  function bindSearch(){
+    var q = document.getElementById("q");
+    if(!q) return;
+    q.addEventListener("input", function(){ query=q.value; renderRoute(true); });
+  }
+
+  function typePill(tipo){
+    var label = TYPE_LABEL[tipo] || tipo || "Recurso";
+    return '<span class="pill type-'+esc(tipo||"")+'">'+esc(label)+'</span>';
+  }
+
+  /* ---------- HOME ---------- */
+  function renderHome(keepFocus){
+    var subs = FING.subjects.filter(matches);
+    var cards = subs.map(function(s){
+      var tipos = {};
+      (s.semestres||[]).forEach(function(sem){(sem.recursos||[]).forEach(function(r){tipos[r.tipo]=1;});});
+      var pills = Object.keys(tipos).map(typePill).join("");
+      return '<div class="mcard" style="--a:'+esc(s.accent||"#4f46e5")+'" data-id="'+esc(s.id)+'">'+
+          '<div class="bar"></div>'+
+          '<div class="body">'+
+            '<div class="ico">'+esc(s.emoji||"📘")+'</div>'+
+            '<div class="sig">'+esc(s.sigla||"")+'</div>'+
+            '<h3>'+esc(s.nombre)+'</h3>'+
+            '<p class="desc">'+esc(s.descripcion||"")+'</p>'+
+            '<div class="foot">'+pills+
+              '<span class="count">📚 '+countPreguntas(s)+' preguntas</span>'+
+            '</div>'+
+          '</div>'+
+        '</div>';
+    }).join("");
+
+    var body = searchbar();
+    if(!subs.length){
+      body += '<div class="empty">No hay resultados para “'+esc(query)+'”.</div>';
+    } else {
+      body += '<div class="sec-title">Materias</div><div class="grid">'+cards+'</div>';
+    }
+    $view.innerHTML = body;
+
+    document.querySelectorAll(".mcard").forEach(function(c){
+      c.addEventListener("click", function(){ location.hash = "#/m/"+c.getAttribute("data-id"); });
+    });
+    bindSearch();
+    if(keepFocus) focusSearch();
+  }
+
+  /* ---------- MATERIA ---------- */
+  function renderMateria(id, keepFocus){
+    var s = FING.subjects.filter(function(x){return x.id===id;})[0];
+    if(!s){ renderHome(); return; }
+    document.documentElement.style.setProperty("--accent", s.accent||"#4f46e5");
+
+    var sems = (s.semestres||[]).map(function(sem){
+      var recs = (sem.recursos||[]).filter(function(r){
+        if(!query) return true;
+        return (r.titulo+" "+(r.nota||"")+" "+sem.nombre).toLowerCase().indexOf(query.toLowerCase())>=0;
+      }).map(function(r){
+        var inner =
+          '<div class="rico">'+(r.tipo==="teorico"?"🧠":"🔢")+'</div>'+
+          '<div class="rmain">'+
+            '<div class="rtitle">'+esc(r.titulo)+'</div>'+
+            '<div class="rmeta">'+typePill(r.tipo)+
+              '<span class="count">📚 '+(r.preguntas||0)+'</span>'+
+              (r.nota?'<span class="rnote">· '+esc(r.nota)+'</span>':'')+
+            '</div>'+
+          '</div>'+
+          '<div class="go">↗</div>';
+        return '<a class="rcard" href="'+esc(r.url)+'">'+inner+'</a>';
+      }).join("");
+      if(!recs) return "";
+      return '<div class="sem"><h2><span class="dot"></span>'+esc(sem.nombre)+'</h2>'+recs+'</div>';
+    }).join("");
+
+    var crumb = '<div class="crumb"><a href="#/">Materias</a>'+
+      '<span class="sep">/</span><b>'+esc(s.sigla||s.nombre)+'</b></div>';
+    var head = '<div class="materia-head">'+
+        '<div class="ico">'+esc(s.emoji||"📘")+'</div>'+
+        '<div><h1>'+esc(s.nombre)+'</h1><p>'+esc(s.descripcion||"")+'</p></div>'+
+      '</div>';
+
+    var body = crumb + head + searchbar();
+    body += sems || '<div class="empty">No hay repasos que coincidan con “'+esc(query)+'”.</div>';
+    $view.innerHTML = body;
+    bindSearch();
+    if(keepFocus) focusSearch();
+  }
+
+  function focusSearch(){
+    var q=document.getElementById("q"); if(q){ q.focus(); var v=q.value; q.value=""; q.value=v; }
+  }
+
+  /* ---------- router ---------- */
+  function renderRoute(keepFocus){
+    var h = location.hash || "#/";
+    var m = h.match(/^#\/m\/([^\/?]+)/);
+    if(m){ renderMateria(decodeURIComponent(m[1]), keepFocus); }
+    else { renderHome(keepFocus); }
+    if(!keepFocus){ window.scrollTo(0,0); }
+  }
+  window.addEventListener("hashchange", function(){ query=""; renderRoute(false); });
+
+  /* ---------- boot: cargar data/<materia>.js del manifest ---------- */
+  function boot(){
+    renderStats();
+    renderRoute(false);
+  }
+  function loadManifest(){
+    var list = (FING.manifest || []).slice();
+    if(!list.length){ boot(); return; }
+    var pending = list.length;
+    list.forEach(function(src){
+      var sc = document.createElement("script");
+      sc.src = src;
+      sc.onload = sc.onerror = function(){ if(--pending===0) boot(); };
+      document.head.appendChild(sc);
+    });
+  }
+  loadManifest();
+})();
+</script>
+</body>
+</html>
