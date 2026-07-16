@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teórico SO · 1er parcial · Repaso</title>
+<style>
+:root{
+  --bg:#0f172a; --bg2:#1e293b; --panel:#ffffff; --ink:#0f172a; --muted:#64748b;
+  --line:#e2e8f0; --soft:#f1f5f9; --accent:#0891b2; --accent2:#06b6d4;
+  --green:#059669; --greenbg:#ecfdf5; --blue:#2563eb; --bluebg:#eff6ff;
+  --amber:#b45309; --amberbg:#fffbeb; --purple:#7c3aed; --purplebg:#f5f3ff;
+  --rose:#e11d48; --shadow:0 10px 30px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);background:linear-gradient(180deg,#0f172a 0,#134e4a 260px,#eef2f7 260px,#eef2f7 100%);
+  min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:22px 18px 60px}
+header{color:#fff;padding:8px 2px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+header h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+header p{margin:0;color:#a5f3fc;font-size:13.5px}
+.badgeN{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:10px 14px;text-align:center;min-width:120px}
+.badgeN b{font-size:22px;display:block;line-height:1}
+.badgeN span{font-size:11px;color:#a5f3fc;text-transform:uppercase;letter-spacing:.5px}
+.motibar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.mchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:9px 12px;min-width:110px}
+.mchip b{display:block;font-size:16px;line-height:1.15}
+.mchip span{font-size:10.5px;color:#a5f3fc;text-transform:uppercase;letter-spacing:.5px}
+.progress{height:6px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;margin-top:10px;max-width:280px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,#22d3ee,#34d399);width:0;transition:width .3s}
+.daybar{height:5px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:6px;max-width:160px}
+.daybar i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#f97316);width:0;transition:width .3s}
+.toolbar{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:var(--shadow);margin-bottom:16px}
+.grp{display:flex;flex-direction:column;gap:3px}
+.grp label{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;padding-left:2px}
+select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 11px;cursor:pointer;transition:.15s}
+select:hover,.btn:hover{border-color:#c3cad6}
+.btn{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:#0e7490}
+.btn.ghost{background:var(--soft)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:8px 13px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--muted);font-weight:600}
+.seg button.on{background:var(--accent);color:#fff}
+.chk{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--ink);background:var(--soft);padding:8px 12px;border-radius:10px;cursor:pointer;user-select:none;border:1px solid var(--line)}
+.chk input{accent-color:var(--accent);width:15px;height:15px}
+.spacer{flex:1 1 auto}
+.layout{display:grid;grid-template-columns:1fr;gap:16px}
+.layout.withlist{grid-template-columns:1fr 340px}
+@media(max-width:880px){.layout.withlist{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px;min-height:340px;display:flex;flex-direction:column}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.pill{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.pill.exam{background:#ecfeff;color:#0e7490;border-color:#a5f3fc}
+.pill.prob{background:var(--soft);color:var(--muted)}
+.pill.topic{background:#f0fdfa;color:#0f766e;border-color:#ccfbf1}
+.pill.known{background:var(--greenbg);color:var(--green);border-color:#a7f3d0}
+.q{font-size:18.5px;line-height:1.5;font-weight:600;letter-spacing:-.2px;margin:0 0 8px;white-space:pre-wrap}
+.qhint{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+.reveal-wrap{margin-top:auto}
+.answer{border-top:1px dashed var(--line);margin-top:18px;padding-top:18px;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.atype{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:12px}
+.atype.oficial{background:var(--greenbg);color:var(--green)}
+.atype.slides{background:var(--bluebg);color:var(--blue)}
+.atype.general{background:var(--amberbg);color:var(--amber)}
+.answer .txt{font-size:15.5px;line-height:1.62;color:#1f2937}
+.answer .txt p{margin:0 0 11px}
+.src{margin-top:14px;font-size:13px;color:var(--muted);background:var(--soft);border-radius:10px;padding:10px 13px;display:flex;gap:8px;align-items:flex-start}
+.src b{color:#334155}
+.note{margin-top:12px;font-size:13px;line-height:1.5;color:var(--amber);background:var(--amberbg);border:1px solid #fde68a;border-radius:10px;padding:10px 13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);align-items:center}
+.nav{display:flex;gap:8px;align-items:center;margin-left:auto}
+.pos{font-size:13px;color:var(--muted);min-width:74px;text-align:center;font-variant-numeric:tabular-nums}
+.big-reveal{width:100%;padding:14px;font-size:15px}
+.listpanel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px;max-height:620px;display:flex;flex-direction:column}
+.listpanel h3{margin:2px 2px 10px;font-size:14px;display:flex;align-items:center;gap:8px}
+.search{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:13px;margin-bottom:10px}
+.list{overflow:auto;display:flex;flex-direction:column;gap:4px;padding-right:4px}
+.li{display:flex;gap:9px;align-items:flex-start;padding:9px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;font-size:12.5px;line-height:1.35}
+.li:hover{background:var(--soft)}
+.li.cur{background:#ecfeff;border-color:#a5f3fc}
+.li .dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:0 0 auto}
+.dot.oficial{background:var(--green)}.dot.slides{background:var(--blue)}.dot.general{background:#f59e0b}
+.li .code{font-size:10.5px;color:var(--muted);font-weight:700;white-space:nowrap}
+.li .qt{color:#334155;flex:1}
+.li .chk2{margin-top:1px;color:var(--green);font-weight:800}
+.li.done .qt{color:#94a3b8;text-decoration:line-through}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.empty{text-align:center;color:var(--muted);padding:40px 10px}
+.empty b{color:var(--ink);font-size:17px}
+.kbd{font-size:11px;color:var(--muted);margin-top:14px;text-align:center}
+.kbd kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;font-family:inherit;font-size:11px;color:#475569}
+.domain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:16px}
+.domain h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.ditem{background:var(--soft);border-radius:10px;padding:8px 10px;border:1px solid var(--line)}
+.ditem .dn{font-size:12px;font-weight:700;color:#334155;margin-bottom:4px}
+.ditem .db{height:5px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+.ditem .db i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#34d399);width:0}
+.ditem .ds{font-size:10.5px;color:var(--muted);margin-top:3px}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:80;box-shadow:0 12px 30px rgba(0,0,0,.35);max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.cheer{margin-top:10px;font-size:13px;color:#a5f3fc;min-height:18px}
+</style>
+</head>
+<body>
+<a href="../../index.html" style="position:fixed;bottom:18px;left:18px;z-index:60;display:inline-flex;align-items:center;gap:7px;background:#111827;color:#fff;text-decoration:none;font:600 13px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.28)">← Inicio</a>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Teórico SO · 1er parcial</h1>
+      <p id="subtitle">Preguntas teóricas de primeros parciales · 2016–2025</p>
+      <div class="progress"><i id="pbar"></i></div>
+      <div class="cheer" id="cheer"></div>
+      <div class="motibar">
+        <div class="mchip"><b id="levelN">Nv. 1</b><span>dominio</span></div>
+        <div class="mchip"><b id="streakN">0</b><span>días seguidos</span></div>
+        <div class="mchip">
+          <b id="dayN">0 / 5</b><span>meta de hoy</span>
+          <div class="daybar"><i id="daybar"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="badgeN"><b id="knownN">0</b><span>que ya sé / <span id="totalN">0</span></span></div>
+  </header>
+
+  <div class="domain" id="domain">
+    <h4>Mapa de dominio por tema</h4>
+    <div class="dgrid" id="dgrid"></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="grp"><label>Orden</label>
+      <div class="seg" id="orderSeg">
+        <button data-o="sec" class="on">Por parcial</button>
+        <button data-o="rand">Aleatorio 🔀</button>
+      </div>
+    </div>
+    <div class="grp"><label>Tema</label>
+      <select id="fCat"></select>
+    </div>
+    <div class="grp"><label>Parcial</label>
+      <select id="fExam"></select>
+    </div>
+    <div class="grp"><label>&nbsp;</label>
+      <label class="chk"><input type="checkbox" id="hideKnown"> Ocultar las que ya sé</label>
+    </div>
+    <div class="spacer"></div>
+    <div class="grp"><label>&nbsp;</label>
+      <button class="btn ghost" id="toggleList">☰ Lista</button>
+    </div>
+    <div class="grp"><label>&nbsp;</label>
+      <button class="btn ghost" id="resetBtn" title="Borrar el progreso guardado">↺ Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="layout" id="layout">
+    <div class="card" id="card"></div>
+    <aside class="listpanel" id="listpanel" style="display:none">
+      <h3>📋 Índice de preguntas <span id="listCount" style="color:var(--muted);font-weight:500"></span></h3>
+      <input class="search" id="search" placeholder="Buscar en las preguntas…">
+      <div class="list" id="list"></div>
+      <div class="legend">
+        <span><i class="dot oficial" style="width:8px;height:8px;border-radius:50%;display:inline-block"></i> Solución oficial</span>
+        <span><i class="dot slides" style="width:8px;height:8px;border-radius:50%;display:inline-block"></i> Desde diapositivas</span>
+        <span><i class="dot general" style="width:8px;height:8px;border-radius:50%;display:inline-block"></i> General (sin slide completa)</span>
+      </div>
+    </aside>
+  </div>
+
+  <div class="kbd">Atajos: <kbd>←</kbd> anterior · <kbd>→</kbd> siguiente · <kbd>espacio</kbd> mostrar respuesta · <kbd>S</kbd> la sabía · <kbd>R</kbd> a repasar · <kbd>L</kbd> lista</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = [{"id":"2016_1","exam":"Mayo 2016","code":"2016-05","problema":"P1.1","topic":"Monitores","cat":"Monitores","q":"Describa la semántica/funcionamiento del siguiente monitor:\n\nmonitor mon\n  con: condition\n  procedure a(test:boolean)\n  begin\n    if test then\n      con.wait()\n    else\n      con.signal()\n      con.signal()\n    end\n  end\nend mon","answer":"El monitor mon ofrece un único procedimiento a(test) y una variable de condición con.\n\n• Si test es verdadero, el proceso invocante se bloquea en la cola de con (wait). Mientras espera no ocupa el monitor: otros procesos pueden entrar.\n• Si test es falso, ejecuta signal() dos veces sobre con: despierta (si hay) hasta dos procesos bloqueados en esa condición. Si la cola está vacía, cada signal no tiene efecto.\n\nComo todo monitor, el acceso a a está mutuo-excluido: solo un proceso a la vez está activo dentro del monitor. La semántica exacta de quién continúa tras el signal (quién se queda con el monitor) depende de la semántica de variables de condición (Hoare/Hansen vs Mesa): en Hoare el despertado entra de inmediato y el señalizador cede el monitor; en Mesa el señalizador sigue y el despertado queda listo.","atype":"slides","sources":[{"deck":"monitores_2026.pdf","slides":[6,9,12,13,14]}]},{"id":"2016_2","exam":"Mayo 2016","code":"2016-05","problema":"P1.2","topic":"Estructura del SO","cat":"Estructura del SO","q":"Describa y comente ventajas y desventajas del diseño de un sistema operativo monolítico y uno en capas.","answer":"Sistema monolítico: no tiene una estructura interna definida; es una colección de procedimientos que pueden invocarse entre sí. No hay ocultación de información: cualquier procedimiento puede llamar a otro. Ventaja: puede lograr buena eficiencia (llamadas directas). Desventaja: difícil de entender/mantener y de aislar fallos. Ejemplos: MS-DOS; Linux (núcleo monolítico, aunque modular).\n\nSistema en capas: se organiza en una jerarquía de capas; cada capa expone una interfaz pública y solo es consumida por la capa superior. La capa 0 es el hardware y la N los procesos de usuario. Ventajas: modularidad; depuración y verificación de cada capa por separado. Desventajas: alto costo de definición de capas en el diseño; menos eficiente que el monolítico por el overhead de atravesar capas. Ejemplo: OS/2.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[22,23,24,25,26]}]},{"id":"2016_3","exam":"Mayo 2016","code":"2016-05","problema":"P1.3","topic":"Procesos","cat":"Procesos e hilos","q":"a) Describa brevemente las secciones de memoria que utiliza un proceso.\nb) Indique las acciones que realiza el SO en el cambio de contexto de un proceso a otro.","answer":"a) Un proceso en memoria se constituye de varias secciones:\n• Código (text): instrucciones del proceso.\n• Datos (data): variables globales.\n• Heap: memoria dinámica que genera el proceso.\n• Stack (pila): preserva el estado en invocaciones anidadas de procedimientos/funciones.\n\nb) El cambio de contexto es el conjunto de acciones para pasar la CPU de un proceso a otro. Implica:\n• Salvar el estado del proceso saliente (registros del procesador, program counter, punteros de memoria, etc.) en su PCB.\n• Cargar el estado del proceso entrante desde su PCB.\nAdemás, el despachador cambia el bit de modo a usuario y salta a la instrucción indicada por el PC del proceso entrante.","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[6,25]},{"deck":"clase6.pdf","slides":[6]}]},{"id":"2016_4","exam":"Mayo 2016","code":"2016-05","problema":"P1.4","topic":"Hilos","cat":"Procesos e hilos","q":"Describa los modelos de Threads: Mx1 (Many-to-One), 1x1 (One-to-One) y MxN (Many-to-Many).","answer":"Mx1 (Many-to-One): varios threads de usuario se mapean a un único kernel thread. El sistema solo reconoce un hilo de control por proceso. Los threads de usuario se planifican a nivel de usuario sobre ese kernel thread. Si un thread se bloquea en un syscall, se bloquea todo el proceso.\n\n1x1 (One-to-One): cada thread de usuario tiene un kernel thread asociado. El sistema reconoce y planifica todos los threads de usuario de forma independiente. No hay planificador a nivel de usuario.\n\nMxN (Many-to-Many): cada proceso tiene un conjunto de kernel threads independiente de cuántos threads de usuario cree. El planificador de usuario asigna threads de usuario a kernel threads; el planificador del sistema solo ve los kernel threads.","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[35,36,37,38]}]},{"id":"2016_5","exam":"Mayo 2016","code":"2016-05","problema":"P1.5","topic":"Multiprocesadores","cat":"Estructura del SO","q":"Describa los sistemas de multiprocesadores simétricos y asimétricos e indique ventajas y desventajas.","answer":"Sistemas asimétricos: al surgir los multiprocesadores, la forma más sencilla de adaptar el SO fue ejecutar el código del núcleo en un único procesador (el “maestro”). Así el SO no debía lidiar con concurrencia en el kernel. Luego se fueron asignando ciertas tareas a otros procesadores, generando una jerarquía. Ventaja: implementación más simple (kernel sin reentrada completa). Desventaja: el procesador que corre el kernel puede ser cuello de botella; el resto queda subordinado.\n\nSistemas simétricos: el código del núcleo está en memoria común y puede ejecutarlo cualquier procesador; se pierde la jerarquía. Ventaja: mejor aprovechamiento y escalabilidad potencial. Desventaja: el núcleo debe ser reentrante; el código del SO y el ancho de banda de memoria se vuelven recursos críticos que limitan la escalabilidad. Requirió rediseños profundos de los SO.","atype":"slides","sources":[{"deck":"clase2.pdf","slides":[21,22]}]},{"id":"2017_1","exam":"Mayo 2017","code":"2017-05","problema":"P1.1","topic":"Micronúcleo","cat":"Estructura del SO","q":"Describa la arquitectura micronúcleo. Describa las ventajas que tiene con respecto a una arquitectura monolítica.","answer":"El micronúcleo se constituye de un núcleo que brinda un manejo mínimo de procesos y memoria y, además, provee una capa de comunicación entre procesos. Esa capa de comunicación es la funcionalidad principal: los restantes servicios del SO se construyen como procesos separados que ejecutan en modo usuario y se acceden por pasaje de mensajes.\n\nVentajas frente a monolítico:\n• Aumenta portabilidad y escalabilidad al encapsular características físicas del sistema.\n• Para incorporar un nuevo servicio no hay que modificar el núcleo.\n• Es más seguro: los servicios corren en modo usuario.\n• El diseño simple y funcional suele resultar en un sistema más confiable.\n\nEn el monolítico, en cambio, todo el núcleo es una colección de procedimientos interdependientes (mayor eficiencia potencial, menos modularidad/aislamiento).","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[22,27,28]}]},{"id":"2017_2","exam":"Mayo 2017","code":"2017-05","problema":"P1.2","topic":"Planificación","cat":"Planificación","q":"a) ¿Qué función cumple el planificador de corto plazo del sistema operativo?\nb) ¿Qué componente controla el grado de multiprogramación del sistema?\nc) Indique qué condiciones desencadenan la ejecución de un planificador de corto plazo no expropiativo.","answer":"a) El planificador de corto plazo determina qué proceso (de los listos) se ejecuta en el procesador. Se ejecuta frecuentemente y debe ser eficiente. El despachador es quien efectivamente da la CPU al proceso elegido (cambio de contexto, bit de modo, saltar al PC).\n\nb) El planificador de largo plazo controla el grado de multiprogramación (cuántos programas/procesos se admiten en el sistema). El de mediano plazo decide si agregar o sacar programas de memoria principal.\n\nc) Un planificador no expropiativo solo se invoca cuando el proceso en ejecución libera la CPU: cuando se bloquea (p. ej. E/S, wait de un hijo) o cuando finaliza (o libera voluntariamente la CPU). No replanifica por interrupción de reloj ni porque otro proceso pase a listo.","atype":"slides","sources":[{"deck":"clase6.pdf","slides":[5,6,9,10]}]},{"id":"2017_3","exam":"Mayo 2017","code":"2017-05","problema":"P1.3","topic":"System calls","cat":"Llamadas al sistema","q":"¿Qué es una system call? Describa los pasos que realiza una system call al ejecutar, indicando qué componente ejecuta cada paso (proceso de usuario, hardware o núcleo del sistema operativo).","answer":"Una system call es una interfaz provista por el núcleo para que los procesos de usuario accedan a los servicios del SO. Se invoca en modo usuario y el servicio se ejecuta en modo monitor/kernel; al retornar se vuelve a modo usuario.\n\nPasos típicos:\n1) Proceso de usuario: carga los parámetros en el lugar adecuado (registros, bloque de memoria o stack) y el número de system call en un registro (p. ej. EAX en Intel).\n2) Proceso de usuario: invoca la interrupción por software (trap) adecuada.\n3) Hardware: al detectar el trap cambia el mode bit a kernel e invoca al manejador de la interrupción.\n4) Núcleo: el system call handler valida el número de llamada e invoca la rutina correspondiente del kernel.\n5) Núcleo: deja el valor de retorno en un registro específico.\n6) Núcleo/hardware: vuelve a modo usuario y retorna el control al proceso invocante (o eventualmente a otro).","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[14,15]}]},{"id":"2017_4","exam":"Mayo 2017","code":"2017-05","problema":"P1.4","topic":"Disco","cat":"Entrada/Salida","q":"Describa las tres secciones en que se divide la superficie de un disco magnético.","answer":"En un disco magnético clásico la superficie se organiza en:\n• Pistas (tracks): circunferencias concéntricas sobre la superficie del plato.\n• Sectores: subdivisiones de cada pista; unidad mínima de transferencia típica.\n• Cilindros: conjunto de pistas alineadas verticalmente en todos los platos (misma posición radial), que se pueden acceder sin mover el brazo entre platos.","atype":"general","sources":[],"note":"No está en las diapositivas de la carpeta (clase2–clase6, concurrencia, etc.). Respuesta del modelo clásico de disco magnético — conviene contrastar con el material del docente si lo dan en otra clase."},{"id":"2017_5","exam":"Mayo 2017","code":"2017-05","problema":"P1.5","topic":"Monitores","cat":"Monitores","q":"Describa el comportamiento de un monitor, las condiciones y las operaciones wait y signal sobre ellas. Explique las semánticas posibles de estas operaciones.","answer":"Un monitor es un tipo abstracto de datos para sincronización: encapsula variables privadas y procedimientos públicos. Garantiza que solo un proceso a la vez esté activo en sus procedimientos (mutua exclusión / región crítica). Los que esperan entrar lo hacen en una cola FIFO de entrada.\n\nVariables de condición (condition): solo válidas dentro del monitor.\n• wait(): el invocante se bloquea en la cola de esa condición y libera el monitor (no ocupa el monitor mientras espera).\n• signal(): si hay procesos bloqueados, despierta al primero de la cola; si no hay, no tiene efecto.\n\nSemánticas de signal (quién sigue activo):\n1) Hoare/Hansen: el que hace signal cede el monitor; el despertado entra de inmediato. Prioridades de colas: E < S < W.\n2) Mesa: el que hace signal sigue; el despertado queda listo y entrará después. Prioridades: E < W < S.\nSi se pone el signal como última instrucción del procedimiento, ambas semánticas se igualan en la práctica.","atype":"slides","sources":[{"deck":"monitores_2026.pdf","slides":[3,6,9,12,13,14]}]},{"id":"2018_1","exam":"Mayo 2018","code":"2018-05","problema":"P1.1","topic":"Dekker","cat":"Concurrencia","q":"¿Qué garantiza el algoritmo de Dekker? Describa al menos una ventaja y una desventaja de este algoritmo.","answer":"El algoritmo de Dekker es una solución al problema de la sección crítica (para dos procesos) que busca satisfacer los requerimientos de mutua exclusión, progreso y espera acotada.\n\nVentaja: es independiente del sistema operativo (no usa system calls) y se implementa solo con variables compartidas y busy waiting; es útil pedagógicamente para entender problemas típicos de algoritmos concurrentes.\n\nDesventaja: usa busy waiting (espera activa), desperdiciando CPU; no se usa en la práctica (se prefieren instrucciones atómicas, semáforos, monitores, etc.).","atype":"slides","sources":[{"deck":"concurrencia.pdf","slides":[17,18,19,20]}]},{"id":"2018_2","exam":"Mayo 2018","code":"2018-05","problema":"P1.2","topic":"PCB","cat":"Procesos e hilos","q":"Describa brevemente el propósito de la estructura PCB. Describa 4 campos de esta estructura que usted considere los más importantes.","answer":"El PCB (Process Control Block / bloque descriptor de proceso) es la estructura de datos con la que el SO describe un proceso: su estado, recursos, información contable, etc. Es el operando de las operaciones sobre procesos, recursos y del planificador.\n\nCampos importantes (cualquiera coherente vale; ejemplos del material):\n1) Estado del proceso: ejecutando, listo, bloqueado, etc.\n2) Estado de la CPU / registros: valor de registros, flags, PC (indefinido mientras el proceso ejecuta porque están en la CPU).\n3) Información de memoria: espacio virtual/real y reglas de protección.\n4) Recursos: archivos, semáforos, dispositivos, etc.\nOtros: procesador asignado, planificación/prioridad, contabilización, ancestro y descendientes.","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[13,14]}]},{"id":"2018_3","exam":"Mayo 2018","code":"2018-05","problema":"P1.3","topic":"Estados de proceso","cat":"Procesos e hilos","q":"Un proceso se encuentra en estado \"ready\". Un tiempo después se encuentra en estado \"waiting\". ¿Por cuáles estados pudo haber pasado y qué posibles eventos pueden haber causado dicho cambio?","answer":"Estados típicos: nuevo, listo (ready), ejecutando (running), bloqueado/waiting, finalizado.\n\nDesde ready no se pasa directo a waiting: el proceso debe estar ejecutando para bloquearse. Por tanto el camino es:\nready → running → waiting.\n\nEventos:\n• ready → running: el planificador/despachador le asigna la CPU.\n• running → waiting: el proceso espera un evento (completa pedido de E/S, señal, recurso, wait de un hijo, etc.).\n\nNo hay transición ready→waiting sin pasar por running.","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[7,8]}]},{"id":"2018_4","exam":"Mayo 2018","code":"2018-05","problema":"P1.4","topic":"Espera activa","cat":"Concurrencia","q":"¿Qué significa el término \"espera activa\" (busy waiting)? ¿Existe otro tipo de espera en un Sistema Operativo? En caso afirmativo, descríbalo brevemente.","answer":"Espera activa (busy waiting): el proceso gira en un loop consultando una condición (p. ej. while TestAndSet(lock)) sin liberar la CPU. Consume ciclos aunque no avance. Aparece en soluciones tipo Dekker y en locks con TestAndSet/Swap.\n\nOtro tipo: espera bloqueante (pasiva). El proceso se suspende (pasa a waiting) y cede la CPU hasta que un evento lo despierte (fin de E/S, signal de semáforo/condición, etc.). El planificador puede dar la CPU a otro proceso. Es la forma habitual en semáforos/monitores bien implementados (sin busy waiting).","atype":"slides","sources":[{"deck":"concurrencia.pdf","slides":[20]},{"deck":"semaforos.pdf","slides":[6,7,9]},{"deck":"monitores_2026.pdf","slides":[8]}]},{"id":"2018_5","exam":"Mayo 2018","code":"2018-05","problema":"P1.5","topic":"Procesos e hilos","cat":"Procesos e hilos","q":"Considere los siguientes componentes de un proceso: stack, heap, registros del CPU y variables globales. ¿Cuáles de estos componentes son compartidos entre:\na) Un proceso padre y su hijo luego de utilizar la operación fork()?\nb) Todos los threads de un mismo proceso?","answer":"a) Padre e hijo tras fork(): el hijo es un nuevo proceso con su propio espacio de direcciones. No se comparte la memoria ni el estado de la CPU entre padre e hijo (cada uno tiene su stack, heap, variables globales propias —aunque el hijo nace como copia— y sus propios registros). En el diseño del SO: nunca se comparte la memoria ni el estado de la CPU entre padre e hijo.\n\nb) Threads del mismo proceso: comparten el espacio de direccionamiento del proceso: código, datos/variables globales y heap. Cada thread tiene su propio stack y su propio juego de registros (PC, etc.).","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[15,28]}]},{"id":"2018_p2d","exam":"Mayo 2018","code":"2018-05","problema":"P2 (d)","topic":"Planificación","cat":"Planificación","q":"En el ejercicio de planificación con prioridades que varían cada 5 ms (si ejecuta baja prioridad; si está listo sube prioridad), dados los algoritmos vistos en el curso: ¿a cuál de ellos es similar esa planificación? ¿Por qué?","answer":"Se comporta de forma similar a Round Robin: la CPU va alternando entre los procesos a intervalos fijos de tiempo (aquí cada 5 ms cambian las prioridades de forma que, en la práctica, se turnan como con un quantum).","atype":"oficial","sources":[]},{"id":"2018_p3a","exam":"Mayo 2018","code":"2018-05","problema":"P3 (a)","topic":"Monitores vs semáforos","cat":"Monitores","q":"Describa las ventajas del uso de monitores frente a semáforos.","answer":"1) Son una herramienta de más alto nivel: las estructuras de datos del monitor solo se acceden mediante los procedimientos que ofrece. Eso da una visión más abstracta del problema y mayor facilidad/comprensión de la solución.\n\n2) Los monitores permiten no usar variables globales “sueltas”: los procedimientos que acceden a los datos garantizan por definición la mutuoexclusión.\n\n(Complemento de slides: los semáforos son de bajo nivel y es fácil usarlos mal; el monitor encapsula la sincronización.)","atype":"oficial","sources":[{"deck":"monitores_2026.pdf","slides":[2,3]}]},{"id":"2018_p3b","exam":"Mayo 2018","code":"2018-05","problema":"P3 (b)","topic":"Semáforos / productor-consumidor","cat":"Semáforos","q":"Un programa intenta resolver productor-consumidor con buffer finito usando semáforos sem_productor y sem_consumidor y una variable cantidad, con if (cantidad==0) P(...), if (cantidad==1) V(...), etc., y con varios productores y consumidores. ¿Es correcto? Si no, indique errores principales y la idea de corrección.","answer":"El programa NO es correcto.\n\nErrores principales (solución oficial):\n1) No se mutuoexcluye el acceso al buffer.\n2) No se mutuoexcluye el acceso a la variable cantidad: puede llevar a leer sin datos o escribir con buffer lleno.\n3) El semáforo sem_consumidor está mal inicializado (en el código del enunciado se inicializa en 1 en lugar de 0).\n\nErrores menores:\n4) Con varios productores/consumidores, despertar solo cuando cantidad==1 o cantidad==TAM-1 deja procesos dormidos de más.\n5) Constantes TAM_BUFFER y BUFFER_SIZE deberían ser la misma.\n\nIdea de corrección: semáforo de exclusión (zona) + sem_productor inicializado en TAM_BUFFER + sem_consumidor en 0; cada productor hace P(sem_productor), P(zona), inserta, V(zona), V(sem_consumidor); simétrico en el consumidor.","atype":"oficial","sources":[]},{"id":"2019_a","exam":"Setiembre 2019","code":"2019-09","problema":"P1 (a)","topic":"Cobegin-Coend","cat":"Concurrencia","q":"Justifique por qué no es posible representar un grafo de precedencias “cruzado” (con dependencias que no forman bloques disjuntos anidados) utilizando únicamente Cobegin-Coend. ¿Qué herramienta utilizaría para representarlo?","answer":"Solo se pueden representar con Cobegin-Coend los grafos cuyo formato es el de bloques concurrentes anidados/disjuntos (estilo: S0; cobegin S1…Sn-1 coend; Sn, y anidaciones de esa forma). No se pueden representar grafos con dependencias “cruzadas” entre ramas que no se expresan como subgrafos concurrentes disjuntos.\n\nHerramienta más abstracta/general: Fork-Join (o semáforos para imponer las aristas de precedencia que faltan).","atype":"slides","sources":[{"deck":"concurrencia.pdf","slides":[7,10,11]}],"note":"El grafo del parcial es una figura; la idea evaluada es la limitación estructural de Cobegin-Coend frente a grafos no anidables."},{"id":"2019_b","exam":"Setiembre 2019","code":"2019-09","problema":"P1 (b)","topic":"System calls","cat":"Llamadas al sistema","q":"Defina system call y mencione tres ejemplos de system calls asociados a la gestión de archivos. Enumere las formas tradicionales de pasar parámetros al invocar una system call.","answer":"Definición: interfaz del núcleo para que procesos de usuario accedan a servicios del SO.\n\nEjemplos de gestión de archivos: open, read, write, close, creat/unlink, etc. (en el material aparecen open/read/write/close).\n\nFormas tradicionales de pasar parámetros (también en solución 2024 y slides):\n1) A través de un conjunto de registros.\n2) Mediante un bloque de memoria apuntado por un registro.\n3) A través del stack del proceso que realiza el llamado.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[14,15,16,19,20]}]},{"id":"2019_c","exam":"Setiembre 2019","code":"2019-09","problema":"P1 (c)","topic":"Entrada/Salida","cat":"Entrada/Salida","q":"Describa brevemente los métodos para efectuar una operación de entrada/salida.","answer":"Los tres métodos clásicos vistos en el curso de SO son:\n\n1) E/S programada (Programmed I/O) con polling/busy waiting: el procesador emite el pedido y consulta en un loop el estado del dispositivo hasta que esté listo.\n2) E/S por interrupciones: el procesador inicia el pedido y se libera; el dispositivo interrumpe al completar.\n3) DMA (acceso directo a memoria): un controlador DMA transfiere datos entre dispositivo y memoria con mínima intervención de la CPU; al terminar interrumpe.\n\n(La carpeta de diapositivas del 1er parcial detalla controladoras e interrupciones, pero no desarrolla los tres métodos en profundidad como en la clase de E/S del 2º parcial.)","atype":"general","sources":[{"deck":"clase3.pdf","slides":[7,11]}],"note":"Los tres métodos (programada / interrupciones / DMA) son el catálogo estándar del curso; en las diapos de esta carpeta no están expuestos con el mismo detalle. Si tu teórico de E/S difiere, priorizá ese material."},{"id":"2020_c","exam":"Superparcial Julio 2020","code":"2020-07","problema":"P1 (c)","topic":"Mailboxes","cat":"Mensajes","q":"Dado código con un único mailbox infinito a, send no bloqueante y receive bloqueante, con un vendedor y dos clientes que usan el mismo mailbox para pedidos y respuestas: explique qué problemas podrían ocurrir durante su ejecución.","answer":"Problemas (solución oficial):\n\n1) Si un cliente mantiene la CPU durante toda su función: hace send del pedido y luego receive sobre el mismo mailbox; como el send no bloquea, el receive puede retirar el mismo mensaje que él acaba de enviar (en lugar de bloquearse a la espera de la respuesta del vendedor).\n\n2) Aun solucionando lo anterior: el primer cliente hace send y pierde la CPU antes del receive; el segundo cliente también hace send; el vendedor atiende el pedido del primero y hace send de la respuesta; el segundo cliente puede hacer receive y obtener la respuesta del primer cliente (cruce de respuestas / robo de mensaje).\n\nEn resumen: un solo mailbox compartido para ida y vuelta entre varios clientes y un servidor no separa canales ni correlaciona pedido-respuesta.","atype":"oficial","sources":[]},{"id":"2020_e","exam":"Superparcial Julio 2020","code":"2020-07","problema":"P1 (e)","topic":"Protección de CPU","cat":"Protección de hardware","q":"¿Para qué sirve la protección de CPU? ¿Cómo se implementa?","answer":"Sirve para evitar que un proceso, una vez que obtiene la CPU, entre en un loop infinito y no devuelva nunca el control al sistema.\n\nImplementación: un timer que interrumpe periódicamente. El SO carga un contador al asignar la CPU; en cada interrupción de timer la rutina de atención decrementa el contador; si llega a 0, se quita la CPU al proceso y se invoca al planificador. La instrucción que carga el contador debe ser privilegiada.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[11,12]}]},{"id":"2020_t_mx1","exam":"Superparcial Julio 2020","code":"2020-07","problema":"P3 (a)","topic":"Hilos","cat":"Procesos e hilos","q":"Explique el modelo de hilos M×1.","answer":"Mx1 (Many-to-One): los threads se implementan a nivel de usuario. El sistema solo reconoce un thread de control (kernel thread) por proceso. Los threads de usuario ejecutan cuando el planificador de usuario los asigna a ese kernel thread y el planificador del SO le da la CPU al proceso. Si un thread se bloquea en una operación del kernel, se bloquea todo el proceso (todos los threads de usuario).","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[35,36]}]},{"id":"2020_t_fork","exam":"Superparcial Julio 2020","code":"2020-07","problema":"P3 (b)","topic":"fork","cat":"Procesos e hilos","q":"Explique por qué la función fork retorna 0 al proceso hijo y el pid del proceso hijo al proceso padre.","answer":"Un proceso puede tener muchos hijos, pero cada proceso tiene un único padre. Tiene sentido que el padre reciba el PID del hijo (para poder, p. ej., hacer wait de ese hijo). El hijo puede obtener el PID de su padre con otra system call. Devolver 0 al hijo permite bifurcar el código de forma simple (if pid==0 { … hijo … } else { … padre … }).","atype":"oficial","sources":[{"deck":"clase5.pdf","slides":[17]}]},{"id":"2022m_a","exam":"Mayo 2022","code":"2022-05","problema":"P1 (a)","topic":"Micronúcleo","cat":"Estructura del SO","q":"Describa brevemente el diseño de un sistema operativo con el enfoque de micronúcleo (microkernel).","answer":"Núcleo mínimo: manejo básico de procesos y memoria más una capa de comunicación entre procesos (pasaje de mensajes). Los demás servicios del SO se construyen como procesos en modo usuario y se usan enviando mensajes al servicio correspondiente.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[27,28]}]},{"id":"2022m_b","exam":"Mayo 2022","code":"2022-05","problema":"P1 (b)","topic":"Instrucciones privilegiadas","cat":"Protección de hardware","q":"1. Describa por qué es importante para un sistema operativo que el hardware brinde soporte para instrucciones privilegiadas. Ejemplifique enumerando el propósito de 3 instrucciones de hardware usualmente privilegiadas.\n2. ¿Bajo qué condiciones pueden ejecutarse este tipo de instrucciones? Justifique.","answer":"1) Sin instrucciones privilegiadas, cualquier proceso de usuario podría manipular recursos críticos (E/S, protección de memoria, timer) y romper el aislamiento. El hardware restringe esas instrucciones al modo monitor/kernel.\nEjemplos de propósito (del material):\n• Instrucciones de E/S (IN/OUT o equivalentes): acceso directo a dispositivos.\n• Cargar registros base/límite (o administrar la MMU): protección de memoria.\n• Cargar el contador del timer: protección de CPU / quantum.\n\n2) Solo pueden ejecutarse en modo monitor/kernel (mode bit en modo privilegiado). Si un proceso de usuario intenta una instrucción privilegiada, el hardware genera trap/excepción al SO.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[3,4,5,7,10,12]}]},{"id":"2022m_c","exam":"Mayo 2022","code":"2022-05","problema":"P1 (c)","topic":"Procesos e hilos","cat":"Procesos e hilos","q":"Considere: data, heap, stack, variables en registros del CPU. ¿Cuáles se comparten entre:\n1. Un proceso y sus hijos?\n2. Los threads de un mismo proceso?","answer":"1) Proceso e hijos: no se comparte la memoria ni el estado de la CPU. Cada uno tiene su data, heap, stack y registros (el hijo nace como copia tras fork, pero son espacios/estados independientes).\n\n2) Threads del mismo proceso: comparten data y heap (y el resto del espacio del proceso). Cada thread tiene su propio stack y sus propios registros.","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[15,28]}]},{"id":"2022m_d","exam":"Mayo 2022","code":"2022-05","problema":"P1 (d)","topic":"Protección de memoria","cat":"Protección de hardware","q":"Describa brevemente qué significa protección de memoria en un sistema operativo y cómo se implementa.","answer":"Significa proteger la memoria del núcleo (p. ej. vector de interrupciones) y el acceso entre procesos (uno no debe leer/escribir la memoria de otro). El SO debe validar cada dirección generada por un proceso.\n\nImplementación clásica del material: registros base y límite (dirección física más baja y tamaño del bloque). Cada dirección se chequea; si es inválida, trap al SO. La MMU traduce y controla; su administración (cargar base/límite) solo en modo monitor.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[8,9,10]}]},{"id":"2022m_iobound","exam":"Mayo 2022","code":"2022-05","problema":"P2 (a) 2","topic":"Clases de procesos","cat":"Planificación","q":"Dado un proceso P1 con ráfagas cortas de CPU y más tiempo bloqueado que ejecutando: ¿considera que es CPU-bounded o I/O-bounded? Justifique.","answer":"I/O-bounded (I/O-bound): pasa más tiempo bloqueado (asumible como E/S) que ejecutando. Alternativa aceptada: todos sus CPU-bursts son cortos e interrumpidos constantemente por bloqueos.","atype":"oficial","sources":[{"deck":"clase6.pdf","slides":[7]}]},{"id":"2022s_a","exam":"Setiembre 2022","code":"2022-09","problema":"P1 (a)","topic":"Entrada/Salida","cat":"Entrada/Salida","q":"i. Describa brevemente los 3 métodos vistos en el curso para que el Sistema Operativo efectúe una operación de entrada/salida.\nii. Elija uno de ellos y describa sus principales características.","answer":"i. E/S programada (polling/busy waiting), E/S por interrupciones, y DMA.\n\nii. Ejemplo — DMA: hay un chip/controlador que transfiere datos entre dispositivo y memoria sin intervención continua de la CPU. El procesador programa el DMA y continúa; al terminar, el DMA interrumpe. Evita que dispositivos de caracteres interrumpan por cada byte y liberan al procesador en transferencias grandes.\n\n(O, si elegís interrupciones: el proceso se bloquea, el planificador da la CPU a otro; al completar, el handler desbloquea al proceso.)","atype":"general","sources":[{"deck":"clase3.pdf","slides":[7,11]}],"note":"Los tres métodos son el catálogo estándar del curso; detalle fino de DMA/interrupciones no está completo en clase3 de esta carpeta."},{"id":"2022s_b","exam":"Setiembre 2022","code":"2022-09","problema":"P1 (b)","topic":"Capas","cat":"Estructura del SO","q":"i. Describa brevemente la arquitectura de un Sistema Operativo con arquitectura en capas.\nii. Describa ventajas y desventajas de esta arquitectura.","answer":"i. El diseño se organiza en una jerarquía de capas. Cada capa expone una interfaz pública y solo la consumen las de arriba. Capa 0 = hardware; capa N = procesos de usuario.\n\nii. Ventajas: modularidad; depuración y verificación por capa. Desventajas: alto costo de definir las capas en el diseño; menos eficiente que el monolítico por overhead al cruzar capas.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[24,25]}]},{"id":"2022s_c","exam":"Setiembre 2022","code":"2022-09","problema":"P1 (c)","topic":"Protección","cat":"Protección de hardware","q":"Describa bajo qué condiciones es posible construir un Sistema Operativo seguro sin contar con un modo de operación privilegiado en hardware. Justifique su respuesta.","answer":"Sin modo dual/privilegiado, cualquier programa podría ejecutar todas las instrucciones (E/S, modificar protección de memoria, desactivar interrupciones, etc.). Solo se puede hablar de “seguridad” en escenarios donde no hace falta aislar a actores no confiables, por ejemplo:\n• Un único usuario/programa en el que se confía por completo, o\n• Todo el software es de confianza y no hay multiprogramación de código no confiable.\n\nEn un sistema multiprogramado multiusuario real, el modo privilegiado (y la protección de hardware) es necesario para que el SO conserve el control.","atype":"general","sources":[{"deck":"clase4.pdf","slides":[3,4,5]}],"note":"La carpeta no trae una diapositiva con la respuesta literal; se deduce de la motivación del modo dual y la protección de hardware. Verificá con el teórico si dieron una formulación exacta."},{"id":"2022s_d","exam":"Setiembre 2022","code":"2022-09","problema":"P1 (d)","topic":"Context switch","cat":"Procesos e hilos","q":"i. Describa brevemente qué es un “context switch” (cambio de contexto).\nii. Describa brevemente las distintas tareas que implica un “context switch”.","answer":"i. Es el conjunto de acciones por las que se guarda el estado de un proceso/hilo en ejecución y se carga el de otro para que pueda ejecutar. Es clave en multitarea: la CPU alterna entre programas.\n\nii. Tareas típicas (despachador / material):\n• Salvar registros y estado del proceso saliente en su PCB.\n• Cargar registros y estado del proceso entrante desde su PCB.\n• Cambiar el bit de modo a usuario.\n• Saltar a la instrucción (PC) del proceso entrante.\nEl cambio entre threads del mismo proceso es más liviano (no cambia el espacio de direcciones).","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[25]},{"deck":"clase6.pdf","slides":[6]}]},{"id":"2022s_cobegin","exam":"Setiembre 2022","code":"2022-09","problema":"P2 (a)","topic":"Cobegin-Coend","cat":"Concurrencia","q":"Justifique si un grafo de precedencia dado (con dependencias que no forman subgrafos concurrentes disjuntos anidables) es representable solo con Cobegin-Coend.","answer":"No se puede representar. Solo aquellos grafos que formen subgrafos disjuntos concurrentes (estructura anidable de cobegin-coend) pueden representarse con cobegin-coend.","atype":"oficial","sources":[{"deck":"concurrencia.pdf","slides":[10,11]}]},{"id":"2023_a","exam":"Mayo 2023","code":"2023-05","problema":"P1 (a)","topic":"Protección de CPU","cat":"Protección de hardware","q":"Explique la motivación de implementar protección a nivel de la CPU y cómo se implementa.","answer":"Motivación: un proceso con la CPU puede entrar en infinite loop y no devolver el control.\n\nImplementación: timer + interrupciones. El SO programa el timer; la rutina de atención decrementa un contador y, si llega a 0, quita la CPU e invoca al planificador. (Ver diapositivas de Estructuras de los Sistemas de Computación / clase4.)","atype":"oficial","sources":[{"deck":"clase4.pdf","slides":[11,12]}]},{"id":"2023_b","exam":"Mayo 2023","code":"2023-05","problema":"P1 (b)","topic":"fork y exec","cat":"Procesos e hilos","q":"Describa el funcionamiento de las llamadas al sistema fork() y exec().","answer":"fork(): crea un nuevo proceso (hijo). El hijo es una copia del padre; no comparte el espacio de memoria con el padre (cada uno tiene su memoria). Retorna al padre el PID del hijo y al hijo 0.\n\nexec(): sustituye el código/espacio de memoria del proceso actual por el del programa indicado (el proceso sigue siendo el mismo, pero con imagen nueva).","atype":"oficial","sources":[{"deck":"clase5.pdf","slides":[17]}]},{"id":"2023_c","exam":"Mayo 2023","code":"2023-05","problema":"P1 (c)","topic":"fork","cat":"Procesos e hilos","q":"Incluyendo el proceso padre inicial, ¿cuántos procesos crea este código? Justifique.\n\nint main(){\n  printf(\"%d\\n\", getpid());\n  fork();\n  printf(\"%d\\n\", getpid());\n  fork();\n  printf(\"%d\\n\", getpid());\n  fork();\n  printf(\"%d\\n\", getpid());\n  return 0;\n}","answer":"Son 2³ = 8 procesos en total (el original + 7 creados). Cada fork duplica todos los procesos que llegan a esa línea; con 3 forks en secuencia sin condicionales, el árbol se multiplica por 2 en cada uno.","atype":"oficial","sources":[]},{"id":"2023_d","exam":"Mayo 2023","code":"2023-05","problema":"P1 (d)","topic":"Cobegin-Coend","cat":"Concurrencia","q":"Implemente la operación (a/2 − c²·d² + b/3) + (2c − a·b)·d utilizando cobegin-coend, logrando el mayor nivel de concurrencia.","answer":"Idea: maximizar el paralelismo de subexpresiones independientes.\n\nBEGIN\n  Cobegin\n    BEGIN // rama der: (2c − ab)·d\n      Cobegin\n        d1 = 2*c\n        d2 = a*b\n      Coend\n      df = d1 - d2   // 2c-ab\n      der = df * d\n    END\n    BEGIN // rama izq: a/2 − c²d² + b/3\n      Cobegin\n        BEGIN\n          Cobegin\n            di1 = c*c\n            di2 = d*d\n          Coend\n          dif = di1 * di2\n        END\n        BEGIN\n          Cobegin\n            ii1 = a/2\n            ii2 = b/3\n          Coend\n          iif = ii1 + ii2\n        END\n      Coend\n      izq = iif - dif\n    END\n  Coend\n  res = izq + der\nEND\n\n(Es la estructura de la solución oficial del parcial.)","atype":"oficial","sources":[]},{"id":"2023_sem","exam":"Mayo 2023","code":"2023-05","problema":"P3 (a)","topic":"Semáforos","cat":"Semáforos","q":"Explique las dos funciones principales de los semáforos presentadas en el curso. Ejemplifique presentando el código de tres procesos P1, P2, P3 que deben ejecutar unidades funcionales U1, U2, U3 (cada unidad usable por un único proceso a la vez).","answer":"Las dos funciones principales:\n1) Control de acceso a recursos / secciones críticas en mutua exclusión: se inicializa el semáforo con el número de recursos (o 1 para exclusión). Cada proceso hace wait(P) antes de usar el recurso y signal(V) después.\n2) Señalización / secuenciación: para que P1 ejecute S1 antes de que P2 ejecute S2, se inicia el semáforo en 0; P2 hace P antes de S2 y P1 hace V después de S1.\n\nEjemplo (exclusión de U1,U2,U3):\ninit(S1,1); init(S2,1); init(S3,1);\ncobegin P1(); P2(); P3(); coend\nY cada Pi hace P(Si)/usa Ui/V(Si) según la unidad que necesite (en la solución se usan Si para cada unidad en exclusión).","atype":"oficial","sources":[{"deck":"uso-de-semaforos.pdf","slides":[1,2,3]}]},{"id":"2024_a","exam":"Mayo 2024","code":"2024-05","problema":"P1 (a)","topic":"System calls","cat":"Llamadas al sistema","q":"Explique los mecanismos que dispone una llamada al sistema para comunicar datos al sistema operativo.","answer":"Tres mecanismos:\n1) A través de un conjunto específico de registros.\n2) Utilizando un bloque de memoria apuntado por un registro.\n3) A través del stack del proceso que realiza el llamado.","atype":"oficial","sources":[{"deck":"clase4.pdf","slides":[16]}]},{"id":"2024_b","exam":"Mayo 2024","code":"2024-05","problema":"P1 (b)","topic":"Micronúcleo","cat":"Estructura del SO","q":"Considere un SO con micronúcleo.\nI. Describa cómo se construye y explique la principal funcionalidad del sistema.\nII. Explique qué ventajas aporta sobre las otras estructuras vistas en el curso.","answer":"I. Se construye con un núcleo que brinda manejo mínimo de procesos y memoria y provee una capa de comunicación entre procesos. Esa capa de comunicación es la funcionalidad principal: los demás servicios son procesos en modo usuario y se acceden por pasaje de mensajes.\n\nII. Ventajas:\n• Aumenta portabilidad y escalabilidad al encapsular características físicas.\n• No hay que modificar el núcleo para incorporar un nuevo servicio.\n• Más seguro: servicios en modo usuario.\n• Diseño simple y funcional → sistemas más confiables.","atype":"oficial","sources":[{"deck":"clase4.pdf","slides":[27,28]}]},{"id":"2024_c","exam":"Mayo 2024","code":"2024-05","problema":"P1 (c)","topic":"Sincronización por hardware","cat":"Concurrencia","q":"Explique el funcionamiento de las instrucciones de sincronización provistas por hardware que implementan locks y presente un breve pseudocódigo que ejemplifique su uso.","answer":"Las instrucciones son TestAndSet y Swap. Ejecutan de forma atómica, pero la exclusión con ellas requiere busy-waiting.\n\nTestAndSet (idea): lee el valor de lock y lo pone en True atómicamente; retorna el valor viejo.\n  lock = false;\n  while (TestAndSet(lock)); // busy waiting\n  region_critica();\n  lock = false;\n\nSwap: intercambia atómicamente lock y una variable local en true hasta lograr entrar:\n  lock = false;\n  var = true;\n  while (var) do Swap(lock, var);\n  region_critica();\n  lock = false;","atype":"oficial","sources":[{"deck":"semaforos.pdf","slides":[5,6,7,8,9]}]},{"id":"2024_d","exam":"Mayo 2024","code":"2024-05","problema":"P1 (d)","topic":"Drivers / E/S","cat":"Entrada/Salida","q":"Explique cómo se implementa la comunicación con dispositivos de entrada/salida, cómo se carga el software utilizado y los mecanismos utilizados para intercambiar información.","answer":"La comunicación se realiza mediante software específico: device drivers, incorporados al SO. Formas de carga: (i) ensamblados estáticamente al núcleo; (ii) archivo de configuración que indica cuáles cargar; (iii) carga dinámica a demanda.\n\nIntercambio de datos/control con la controladora: registros accesibles por\n• Mapeo de memoria: registros en un espacio de direcciones de memoria principal.\n• Instrucciones directas: cada registro tiene un puerto; IN/OUT privilegiadas leen/escriben la controladora.\n\nTambién se aceptó explicar los métodos de E/S incluyendo DMA.","atype":"oficial","sources":[]},{"id":"2025_a","exam":"Mayo 2025","code":"2025-05","problema":"P1 (a)","topic":"System calls","cat":"Llamadas al sistema","q":"i. Describa dos tipos de llamadas al sistema.\nii. Describa las acciones desde la invocación a una system call hasta su retorno.\niii. Se implementa una system call de interacción con hardware en una biblioteca de usuario. Explique diferencias de invocación entre un SO monolítico y uno en capas.","answer":"i. Tipos (el material lista varios; bastan dos):\n• Control de procesos: cargar/ejecutar/finalizar, wait, memoria, etc.\n• Gestión de archivos: create/open/read/write/close, atributos…\n(Otros: dispositivos, información del sistema, comunicaciones.)\n\nii. Cargar parámetros (stack o registros); cargar número de llamada en registro (EAX); invocar trap; hardware pone mode bit en monitor e invoca el handler; el handler valida el número e invoca la rutina; el retorno va a un registro (EAX); se vuelve a modo usuario y se retorna al proceso (u otro).\n\niii. Monolítico: el manejador puede invocar directamente el código del núcleo que habla con el hardware. En capas: hay que bajar capa a capa (N−1, N−2, …) hasta la capa 0 (hardware), respetando el diseño en capas.","atype":"oficial","sources":[{"deck":"clase4.pdf","slides":[14,15,22,24]}]},{"id":"2025_b","exam":"Mayo 2025","code":"2025-05","problema":"P1 (b)","topic":"Deadlock / estado seguro","cat":"Deadlock","q":"Sobre un grafo de asignación de recursos (una instancia de cada recurso) con procesos P1…P5:\ni. Determine si el sistema está en estado seguro.\nii. ¿Qué sucede si se agrega una unidad del recurso R5?","answer":"i. Con las matrices de asignación/demanda/disponible del parcial, el único proceso que puede correr es P4 (demanda 0). Al liberar R2, ningún otro puede continuar: el sistema NO está en estado seguro y entrará en deadlock. Equivalente: con una instancia por recurso, un ciclo en el grafo (P2–R5–P5–R4–P1–R1–P2) implica deadlock/no seguro.\n\nii. Al agregar una unidad de R5, disponible permite una secuencia segura (P3 → P2 → P1 → P5 tras liberaciones). El sistema pasa a estado seguro.","atype":"oficial","sources":[{"deck":"deadlock.pdf","slides":[20,21,22]}]},{"id":"2025_c","exam":"Mayo 2025","code":"2025-05","problema":"P1 (c)","topic":"Context switch y despachador","cat":"Planificación","q":"i. Explique el concepto de cambio de contexto y su importancia en sistemas multitarea.\nii. Indique qué módulo del SO ejecuta los cambios de contexto y qué otras tareas realiza.","answer":"i. Serie de acciones que guardan el estado de un proceso/hilo en ejecución para cargar y ejecutar otro. Es clave en multitarea: la CPU alterna rápidamente entre programas dando la ilusión de simultaneidad.\n\nii. El despachador, invocado por el planificador cuando hay que cambiar el proceso en CPU. Además del cambio de contexto: cambia el bit de modo a usuario y salta a la instrucción (PC) del proceso entrante (PC tomado del campo de registros del PCB).","atype":"oficial","sources":[{"deck":"clase6.pdf","slides":[6]}]}];
+const LS = "teoricoSO1.v1";
+const DAY_GOAL = 5;
+
+let state = { order:"sec", cat:"__all__", exam:"__all__", hideKnown:false, known:[], listOpen:false, streak:0, lastDay:"", dayKnown:0, dayStamp:"" };
+try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) state=Object.assign(state,s); }catch(e){}
+let known = new Set(state.known||[]);
+let active = [];
+let idx = 0;
+let revealed = false;
+let shuffleMap = {};
+
+const $ = s=>document.querySelector(s);
+const esc = t=>(t||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const examOrderKey = c=>{ const m=(c||"").match(/(\d{4})-(\d{2})/); return m?(m[1]+m[2]):"9999"; };
+const today = ()=>{ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const yesterday = ()=>{ const d=new Date(); d.setDate(d.getDate()-1); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+
+function ensureDay(){
+  const t=today();
+  if(state.dayStamp!==t){
+    // streak: if last study day was yesterday keep, if today already ok, else reset unless same day
+    if(state.lastDay===yesterday()){ /* keep streak until activity */ }
+    else if(state.lastDay!==t){ /* streak may reset on first mark */ }
+    state.dayKnown=0;
+    state.dayStamp=t;
+  }
+}
+
+function save(){ state.known=[...known]; try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){} }
+
+function levelOf(n){
+  // soft levels every 5 known
+  return Math.floor(n/5)+1;
+}
+function cheerMsg(){
+  const n=known.size, tot=DATA.length, pct=tot?Math.round(100*n/tot):0;
+  if(n===0) return "Empezá por un tema que te cueste — marcar “la sabía” suma a tu dominio.";
+  if(n===tot) return "🏆 Dominio completo del teórico del 1er parcial. Brutal.";
+  if(state.dayKnown>=DAY_GOAL) return "🔥 Meta de hoy cumplida. Si querés, una más de repaso libre.";
+  if(pct>=75) return "Ya tenés tres cuartos del teórico. Cerrá los huecos del mapa de dominio.";
+  if(pct>=40) return "Buen ritmo. El mapa de dominio te muestra qué tema falta.";
+  if(state.streak>=3) return "Racha de "+state.streak+" días: la constancia gana al maratón.";
+  return "Cada respuesta que justificás en voz alta vale por dos lecturas.";
+}
+
+function toast(msg){
+  const el=$("#toast"); if(!el) return;
+  el.textContent=msg; el.classList.add("show");
+  clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"),2200);
+}
+
+function buildActive(){
+  let list = DATA.filter(q =>
+     (state.cat==="__all__"   || q.cat===state.cat) &&
+     (state.exam==="__all__"  || q.exam===state.exam) &&
+     (!state.hideKnown || !known.has(q.id)) );
+  if(state.order==="rand"){
+     list.forEach(q=>{ if(!(q.id in shuffleMap)) shuffleMap[q.id]=Math.random(); });
+     list.sort((a,b)=>shuffleMap[a.id]-shuffleMap[b.id]);
+  } else {
+     list.sort((a,b)=> examOrderKey(a.code).localeCompare(examOrderKey(b.code)) || a.problema.localeCompare(b.problema,'es') || a.id.localeCompare(b.id));
+  }
+  active = list;
+  if(idx>=active.length) idx=Math.max(0,active.length-1);
+}
+
+function fmtAnswer(t){
+  return (t||"").split(/\n\n+/).map(p=>"<p>"+esc(p).replace(/\n/g,"<br>")+"</p>").join("");
+}
+function srcLine(q){
+  if(!q.sources||!q.sources.length) return "";
+  const parts = q.sources.map(s=>`<b>${esc(s.deck)}</b> · diapositiva${s.slides.length>1?'s':''} ${s.slides.join(', ')}`);
+  return `<div class="src">📎 <div>Fuente: ${parts.join(' &nbsp;·&nbsp; ')}</div></div>`;
+}
+const ATLABEL={oficial:"✔ Solución oficial del parcial",slides:"📘 Respuesta desde las diapositivas",general:"⚠ Respuesta general (verificar)"};
+
+function renderCard(){
+  const card=$("#card");
+  if(!active.length){
+    card.innerHTML=`<div class="empty"><b>¡Nada por acá! 🎉</b><br><br>
+      ${known.size>=DATA.length?'Marcaste todas las preguntas como sabidas.':'Ninguna pregunta coincide con estos filtros'+(state.hideKnown?' (probá destildar «Ocultar las que ya sé»)':'')+'.'}
+      <br><br><button class="btn primary" onclick="clearFilters()">Ver todas las preguntas</button></div>`;
+    updateChrome(); return;
+  }
+  const q=active[idx];
+  const isK=known.has(q.id);
+  card.innerHTML=`
+    <div class="meta">
+      <span class="pill exam">📄 ${esc(q.exam)}</span>
+      <span class="pill prob">Ejercicio ${esc(q.problema)}</span>
+      <span class="pill topic">${esc(q.topic)}</span>
+      ${isK?'<span class="pill known">✓ ya la sé</span>':''}
+    </div>
+    <div class="q">${esc(q.q)}</div>
+    <div class="qhint">Pensá la respuesta en voz alta (1–2 min) y después revelala. Justificar > memorizar.</div>
+    <div class="reveal-wrap" id="rw"></div>`;
+  const rw=$("#rw");
+  if(!revealed){
+    rw.innerHTML=`<button class="btn primary big-reveal" onclick="reveal()">👁 Mostrar respuesta</button>`;
+  }else{
+    rw.innerHTML=`<div class="answer">
+        <span class="atype ${q.atype}">${ATLABEL[q.atype]}</span>
+        <div class="txt">${fmtAnswer(q.answer)}</div>
+        ${srcLine(q)}
+        ${q.note?`<div class="note">⚠ ${esc(q.note)}</div>`:""}
+      </div>`;
+  }
+  const act=document.createElement("div");
+  act.className="actions";
+  act.innerHTML=`
+    <button class="btn ${isK?'ghost':'primary'}" onclick="markKnown()">${isK?'✓ Sabida':'✓ La sabía'}</button>
+    <button class="btn ghost" onclick="markReview()">↻ A repasar</button>
+    <div class="nav">
+      <button class="btn" onclick="go(-1)">← Anterior</button>
+      <div class="pos">${idx+1} / ${active.length}</div>
+      <button class="btn" onclick="go(1)">Siguiente →</button>
+    </div>`;
+  card.appendChild(act);
+  updateChrome();
+}
+
+function renderDomain(){
+  const box=$("#dgrid"); if(!box) return;
+  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>a.localeCompare(b,'es'));
+  box.innerHTML=cats.map(c=>{
+    const all=DATA.filter(q=>q.cat===c);
+    const kn=all.filter(q=>known.has(q.id)).length;
+    const pct=all.length?Math.round(100*kn/all.length):0;
+    return `<div class="ditem"><div class="dn">${esc(c)}</div><div class="db"><i style="width:${pct}%"></i></div><div class="ds">${kn}/${all.length} · ${pct}%</div></div>`;
+  }).join("");
+}
+
+function updateChrome(){
+  ensureDay();
+  $("#knownN").textContent=known.size;
+  $("#totalN").textContent=DATA.length;
+  $("#pbar").style.width=(100*known.size/Math.max(1,DATA.length)).toFixed(0)+"%";
+  $("#levelN").textContent="Nv. "+levelOf(known.size);
+  $("#streakN").textContent=String(state.streak||0);
+  $("#dayN").textContent=(state.dayKnown||0)+" / "+DAY_GOAL;
+  $("#daybar").style.width=Math.min(100,100*(state.dayKnown||0)/DAY_GOAL)+"%";
+  $("#cheer").textContent=cheerMsg();
+  renderDomain();
+  renderList();
+}
+
+function renderList(){
+  const box=$("#list"); if(!box) return;
+  const term=($("#search")?.value||"").toLowerCase().trim();
+  let items=active.filter(q=>!term || (q.q.toLowerCase().includes(term)||q.exam.toLowerCase().includes(term)||q.topic.toLowerCase().includes(term)||(q.cat||"").toLowerCase().includes(term)));
+  $("#listCount").textContent="("+items.length+")";
+  box.innerHTML="";
+  items.forEach(q=>{
+    const cur=active[idx]&&active[idx].id===q.id, isK=known.has(q.id);
+    const el=document.createElement("div");
+    el.className="li"+(cur?" cur":"")+(isK?" done":"");
+    el.innerHTML=`<span class="dot ${q.atype}"></span>
+      <span class="code">${esc(q.code)}</span>
+      <span class="qt">${esc(q.q.length>92?q.q.slice(0,92)+'…':q.q)}</span>
+      ${isK?'<span class="chk2">✓</span>':''}`;
+    el.onclick=()=>{ idx=active.indexOf(q); revealed=false; renderCard(); };
+    box.appendChild(el);
+  });
+}
+
+window.reveal=()=>{ revealed=true; renderCard(); };
+window.go=d=>{ if(!active.length)return; idx=(idx+d+active.length)%active.length; revealed=false; renderCard(); };
+window.markKnown=()=>{
+  const q=active[idx]; if(!q)return;
+  const was=known.has(q.id);
+  known.add(q.id);
+  ensureDay();
+  const t=today();
+  if(!was){
+    if(state.dayStamp===t) state.dayKnown=(state.dayKnown||0)+1;
+    // streak update on first known of the day
+    if(state.lastDay!==t){
+      if(state.lastDay===yesterday()) state.streak=(state.streak||0)+1;
+      else state.streak=1;
+      state.lastDay=t;
+    }
+    const msgs=[
+      "✔ Sumada al dominio",
+      state.dayKnown===DAY_GOAL?"🔥 ¡Meta de hoy completada!":null,
+      known.size%5===0?"⬆️ Subís a nivel "+levelOf(known.size):null,
+      state.streak>=2?"📅 Racha: "+state.streak+" días":null
+    ].filter(Boolean);
+    toast(msgs[0]+(msgs[1]?" · "+msgs[1]:""));
+  }
+  save();
+  if(state.hideKnown){ buildActive(); revealed=false; }
+  renderCard();
+};
+window.markReview=()=>{ const q=active[idx]; if(!q)return; known.delete(q.id); save(); renderCard(); };
+window.clearFilters=()=>{ state.cat="__all__";state.exam="__all__";state.hideKnown=false;
+   $("#fCat").value="__all__";$("#fExam").value="__all__";$("#hideKnown").checked=false;
+   idx=0;revealed=false;buildActive();renderCard();save(); };
+
+function initControls(){
+  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>a.localeCompare(b,'es'));
+  $("#fCat").innerHTML=`<option value="__all__">Todos los temas (${DATA.length})</option>`+
+     cats.map(c=>`<option value="${esc(c)}">${esc(c)} (${DATA.filter(q=>q.cat===c).length})</option>`).join("");
+  const exams=[...new Set(DATA.map(q=>q.exam))].sort((a,b)=>examOrderKey(DATA.find(q=>q.exam===b).code).localeCompare(examOrderKey(DATA.find(q=>q.exam===a).code)));
+  $("#fExam").innerHTML=`<option value="__all__">Todos los parciales</option>`+
+     exams.map(e=>`<option value="${esc(e)}">${esc(e)} (${DATA.filter(q=>q.exam===e).length})</option>`).join("");
+  $("#fCat").value=state.cat; $("#fExam").value=state.exam; $("#hideKnown").checked=!!state.hideKnown;
+  document.querySelectorAll("#orderSeg button").forEach(b=>{
+    b.classList.toggle("on",b.dataset.o===state.order);
+    b.onclick=()=>{ state.order=b.dataset.o; if(b.dataset.o==="rand")shuffleMap={};
+      document.querySelectorAll("#orderSeg button").forEach(x=>x.classList.toggle("on",x===b));
+      idx=0;revealed=false;buildActive();renderCard();save(); };
+  });
+  $("#fCat").onchange=e=>{state.cat=e.target.value;idx=0;revealed=false;buildActive();renderCard();save();};
+  $("#fExam").onchange=e=>{state.exam=e.target.value;idx=0;revealed=false;buildActive();renderCard();save();};
+  $("#hideKnown").onchange=e=>{state.hideKnown=e.target.checked;idx=0;revealed=false;buildActive();renderCard();save();};
+  $("#toggleList").onclick=()=>{ state.listOpen=!state.listOpen; applyList(); save(); };
+  $("#search")&&($("#search").oninput=renderList);
+  $("#resetBtn").onclick=()=>{ if(confirm("¿Borrar el progreso (sabidas, racha y meta del día)?")){ known=new Set(); state.streak=0; state.lastDay=""; state.dayKnown=0; state.dayStamp=""; save(); buildActive(); renderCard(); } };
+  applyList();
+}
+function applyList(){
+  $("#listpanel").style.display=state.listOpen?"flex":"none";
+  $("#layout").classList.toggle("withlist",state.listOpen);
+  $("#toggleList").classList.toggle("primary",state.listOpen);
+  if(state.listOpen)renderList();
+}
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;
+  if(e.key==="ArrowLeft")go(-1);
+  else if(e.key==="ArrowRight")go(1);
+  else if(e.key===" "||e.key==="Enter"){e.preventDefault(); if(!revealed)reveal();}
+  else if(e.key.toLowerCase()==="s")markKnown();
+  else if(e.key.toLowerCase()==="r")markReview();
+  else if(e.key.toLowerCase()==="l"){state.listOpen=!state.listOpen;applyList();save();}
+});
+ensureDay();
+initControls(); buildActive(); renderCard();
+</script>
+</body>
+</html>

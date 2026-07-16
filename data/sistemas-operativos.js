@@ -13,11 +13,24 @@ FING.registerSubject({
   sigla: "SO",
   emoji: "🖥️",
   accent: "#0891b2",
-  descripcion: "Preguntas teóricas de los segundos parciales: almacenamiento y RAID, memoria, procesos, planificación y más.",
+  descripcion: "Preguntas teóricas de 1er y 2º parcial: procesos, sincronización, planificación, memoria, almacenamiento y más.",
   semestres: [
     {
-      id: "2025-s1",
-      nombre: "2025 · Segundo parcial",
+      id: "1er-parcial",
+      nombre: "Primer parcial · teórico",
+      recursos: [
+        {
+          titulo: "Teórico — repaso 1er parcial (flashcards)",
+          tipo: "teorico",
+          preguntas: 47,
+          nota: "Parciales 2016 → 2025 · con fuentes",
+          url: "materias/sistemas-operativos/teorico-1er-parcial.html"
+        }
+      ]
+    },
+    {
+      id: "2do-parcial",
+      nombre: "Segundo parcial · teórico",
       recursos: [
         {
           titulo: "Teórico — repaso 2º parcial (flashcards)",
