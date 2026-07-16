@@ -47,9 +47,13 @@ select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);backgroun
 .chk{display:inline-flex;align-items:center;gap:7px;font-size:13px;background:var(--soft);padding:8px 12px;border-radius:10px;cursor:pointer;border:1px solid var(--line);user-select:none}
 .chk input{accent-color:var(--accent)}
 .spacer{flex:1 1 auto}
-.domain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:14px}
-.domain h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.domain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px 14px;box-shadow:var(--shadow);margin-bottom:14px}
+.domain-head{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;background:transparent;padding:2px 0;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.domain-head h4{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.domain-head .chev{font-size:12px;color:var(--muted);transition:transform .15s;font-weight:700}
+.domain.collapsed .chev{transform:rotate(-90deg)}
+.domain.collapsed .dgrid{display:none}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
 .ditem{background:var(--soft);border-radius:10px;padding:8px 10px;border:1px solid var(--line)}
 .ditem .dn{font-size:12px;font-weight:700;color:#3b0764;margin-bottom:4px}
 .ditem .db{height:5px;background:#e9e0f5;border-radius:99px;overflow:hidden}
@@ -142,8 +146,11 @@ select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);backgroun
     </div>
   </header>
 
-  <div class="domain">
-    <h4>Mapa de dominio · Exámenes</h4>
+  <div class="domain" id="domain">
+    <button type="button" class="domain-head" id="domainToggle" aria-expanded="true" title="Mostrar/ocultar mapa">
+      <h4>Mapa de dominio · Exámenes</h4>
+      <span class="chev">▼</span>
+    </button>
     <div class="dgrid" id="dgrid"></div>
   </div>
 
@@ -207,7 +214,7 @@ const DATA = [{"id":"2014j_1","exam":"Julio 2014","code":"2014-07","problema":"P
 const LS = "teoricoSOex.v1";
 const XP_PER = 10;
 
-let state = { order:"sec", cat:"__all__", exam:"__all__", hideKnown:false, known:[], listOpen:false, xp:0, tokens:0, hiScore:0, knownCountForTokens:0 };
+let state = { order:"sec", cat:"__all__", exam:"__all__", hideKnown:false, known:[], listOpen:false, xp:0, tokens:0, hiScore:0, knownCountForTokens:0, domainOpen:true };
 try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) state=Object.assign(state,s); }catch(e){}
 let known = new Set(state.known||[]);
 let active=[], idx=0, revealed=false, shuffleMap={};
@@ -274,6 +281,13 @@ function renderCard(){
     </div>`;
   card.appendChild(act); updateChrome();
 }
+function applyDomain(){
+  const el=$("#domain"), btn=$("#domainToggle");
+  if(!el) return;
+  const open = state.domainOpen!==false;
+  el.classList.toggle("collapsed", !open);
+  if(btn) btn.setAttribute("aria-expanded", open?"true":"false");
+}
 function renderDomain(){
   const box=$("#dgrid"); if(!box) return;
   const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>a.localeCompare(b,'es'));
@@ -282,6 +296,7 @@ function renderDomain(){
     const pct=all.length?Math.round(100*kn/all.length):0;
     return `<div class="ditem"><div class="dn">${esc(c)}</div><div class="db"><i style="width:${pct}%"></i></div><div class="ds">${kn}/${all.length}</div></div>`;
   }).join("");
+  applyDomain();
 }
 function updateChrome(){
   $("#knownN").textContent=known.size; $("#totalN").textContent=DATA.length;
@@ -352,7 +367,9 @@ function initControls(){
   $("#search")&&($("#search").oninput=renderList);
   $("#resetBtn").onclick=()=>{if(confirm("¿Borrar progreso (sabidas, XP, fichas, hi-score)?")){known=new Set();state.xp=0;state.tokens=0;state.hiScore=0;state.knownCountForTokens=0;sessionCombo=0;save();buildActive();renderCard();}};
   $("#playBtn").onclick=openGame;
+  $("#domainToggle")&&($("#domainToggle").onclick=()=>{state.domainOpen=state.domainOpen===false; applyDomain(); save();});
   applyList();
+  applyDomain();
 }
 function applyList(){
   $("#listpanel").style.display=state.listOpen?"flex":"none";

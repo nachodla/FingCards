@@ -93,9 +93,13 @@ select:hover,.btn:hover{border-color:#c3cad6}
 .empty b{color:var(--ink);font-size:17px}
 .kbd{font-size:11px;color:var(--muted);margin-top:14px;text-align:center}
 .kbd kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;font-family:inherit;font-size:11px;color:#475569}
-.domain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:16px}
-.domain h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.domain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px 14px;box-shadow:var(--shadow);margin-bottom:16px}
+.domain-head{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;background:transparent;padding:2px 0;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.domain-head h4{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.domain-head .chev{font-size:12px;color:var(--muted);transition:transform .15s;font-weight:700}
+.domain.collapsed .chev{transform:rotate(-90deg)}
+.domain.collapsed .dgrid{display:none}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:10px}
 .ditem{background:var(--soft);border-radius:10px;padding:8px 10px;border:1px solid var(--line)}
 .ditem .dn{font-size:12px;font-weight:700;color:#334155;margin-bottom:4px}
 .ditem .db{height:5px;background:#e2e8f0;border-radius:99px;overflow:hidden}
@@ -128,7 +132,10 @@ select:hover,.btn:hover{border-color:#c3cad6}
   </header>
 
   <div class="domain" id="domain">
-    <h4>Mapa de dominio por tema</h4>
+    <button type="button" class="domain-head" id="domainToggle" aria-expanded="true" title="Mostrar/ocultar mapa">
+      <h4>Mapa de dominio por tema</h4>
+      <span class="chev">▼</span>
+    </button>
     <div class="dgrid" id="dgrid"></div>
   </div>
 
@@ -180,7 +187,7 @@ const DATA = [{"id":"2016_1","exam":"Mayo 2016","code":"2016-05","problema":"P1.
 const LS = "teoricoSO1.v1";
 const DAY_GOAL = 5;
 
-let state = { order:"sec", cat:"__all__", exam:"__all__", hideKnown:false, known:[], listOpen:false, streak:0, lastDay:"", dayKnown:0, dayStamp:"" };
+let state = { order:"sec", cat:"__all__", exam:"__all__", hideKnown:false, known:[], listOpen:false, streak:0, lastDay:"", dayKnown:0, dayStamp:"", domainOpen:true };
 try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) state=Object.assign(state,s); }catch(e){}
 let known = new Set(state.known||[]);
 let active = [];
@@ -298,6 +305,13 @@ function renderCard(){
   updateChrome();
 }
 
+function applyDomain(){
+  const el=$("#domain"), btn=$("#domainToggle");
+  if(!el) return;
+  const open = state.domainOpen!==false;
+  el.classList.toggle("collapsed", !open);
+  if(btn) btn.setAttribute("aria-expanded", open?"true":"false");
+}
 function renderDomain(){
   const box=$("#dgrid"); if(!box) return;
   const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>a.localeCompare(b,'es'));
@@ -307,6 +321,7 @@ function renderDomain(){
     const pct=all.length?Math.round(100*kn/all.length):0;
     return `<div class="ditem"><div class="dn">${esc(c)}</div><div class="db"><i style="width:${pct}%"></i></div><div class="ds">${kn}/${all.length} · ${pct}%</div></div>`;
   }).join("");
+  applyDomain();
 }
 
 function updateChrome(){
@@ -395,7 +410,9 @@ function initControls(){
   $("#toggleList").onclick=()=>{ state.listOpen=!state.listOpen; applyList(); save(); };
   $("#search")&&($("#search").oninput=renderList);
   $("#resetBtn").onclick=()=>{ if(confirm("¿Borrar el progreso (sabidas, racha y meta del día)?")){ known=new Set(); state.streak=0; state.lastDay=""; state.dayKnown=0; state.dayStamp=""; save(); buildActive(); renderCard(); } };
+  $("#domainToggle")&&($("#domainToggle").onclick=()=>{ state.domainOpen = state.domainOpen===false; applyDomain(); save(); });
   applyList();
+  applyDomain();
 }
 function applyList(){
   $("#listpanel").style.display=state.listOpen?"flex":"none";
