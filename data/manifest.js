@@ -8,5 +8,6 @@ window.FING = window.FING || {};
 window.FING.manifest = [
   "data/tiis.js",
   "data/sistemas-operativos.js",
-  "data/arquitectura-computadoras.js"
+  "data/arquitectura-computadoras.js",
+  "data/redes-computadoras.js"
 ];

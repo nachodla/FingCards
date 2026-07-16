@@ -121,12 +121,53 @@ function cheerMsg(){
   if(sessionCombo>=3) return "Combo ×"+sessionCombo+" en esta sesión.";
   return "XP y progreso se guardan en este navegador.";
 }
+function groupKey(q){
+  const p=(q.problema||"").trim();
+  // "Pregunta 1 (a)" / "Pregunta 1"
+  let m=p.match(/Pregunta\s+(\d+)/i);
+  if(m) return (q.code||"")+"|Pg"+m[1];
+  // "P1 (a)", "P1.1", "P1 (a) I", "P3 (a)"
+  m=p.match(/^P(\d+)/i);
+  if(m) return (q.code||"")+"|P"+m[1];
+  // fallback: quitar letra final (a)/(b) y romanos
+  const base=p.replace(/\s*\([a-e]\)\s*.*$/i,"").replace(/\s+[IVX]+$/i,"").trim();
+  return (q.code||"")+"|"+(base||q.id);
+}
+function partOrder(q){
+  const p=(q.problema||"");
+  const m=p.match(/\(([a-e])\)/i);
+  if(m) return m[1].toLowerCase().charCodeAt(0)*10;
+  const m2=p.match(/P\d+\.(\d+)/i);
+  if(m2) return parseInt(m2[1],10);
+  const m3=p.match(/\b(I{1,3}|IV|V)\s*$/i);
+  if(m3){ const map={I:1,II:2,III:3,IV:4,V:5}; return map[m3[1].toUpperCase()]||0; }
+  return 0;
+}
 function buildActive(){
   let list=DATA.filter(q=>(state.cat==="__all__"||q.cat===state.cat)&&(state.exam==="__all__"||q.exam===state.exam)&&(!state.hideKnown||!known.has(q.id)));
-  if(state.order==="rand"){ list.forEach(q=>{if(!(q.id in shuffleMap))shuffleMap[q.id]=Math.random();}); list.sort((a,b)=>shuffleMap[a.id]-shuffleMap[b.id]); }
-  else list.sort((a,b)=>examOrderKey(a.code).localeCompare(examOrderKey(b.code))||a.problema.localeCompare(b.problema,'es')||a.id.localeCompare(b.id));
+  if(state.order==="rand"){
+    // Barajar por grupo (mismo examen + misma pregunta); a/b/c o subpartes quedan seguidas
+    const groups=new Map();
+    list.forEach(q=>{ const k=groupKey(q); if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(q); });
+    const keys=[...groups.keys()];
+    keys.forEach(k=>{ if(!(k in shuffleMap)) shuffleMap[k]=Math.random(); });
+    keys.sort((a,b)=> shuffleMap[a]-shuffleMap[b]);
+    list=[];
+    keys.forEach(k=>{
+      const g=groups.get(k);
+      g.sort((a,b)=> partOrder(a)-partOrder(b) || a.id.localeCompare(b.id));
+      list.push(...g);
+    });
+  } else {
+    list.sort((a,b)=> examOrderKey(a.code).localeCompare(examOrderKey(b.code))
+      || groupKey(a).localeCompare(groupKey(b))
+      || partOrder(a)-partOrder(b)
+      || (a.problema||"").localeCompare(b.problema||"","es")
+      || a.id.localeCompare(b.id));
+  }
   active=list; if(idx>=active.length) idx=Math.max(0,active.length-1);
 }
+
 function fmtAnswer(t){ return (t||"").split(/\n\n+/).map(p=>"<p>"+esc(p).replace(/\n/g,"<br>")+"</p>").join(""); }
 function renderCard(){
   const card=$("#card");
