@@ -7,7 +7,7 @@ FING.registerSubject({
   sigla: "Arqui",
   emoji: "🧩",
   accent: "#ea580c",
-  descripcion: "Preguntas teóricas de exámenes: pipeline, cache, 8086, lógica, representación de datos, Hamming y más.",
+  descripcion: "Preguntas teóricas de exámenes organizadas por tema del curso (numeración, códigos, lógica, memorias, CPU, x86, cache, pipeline…).",
   semestres: [
     {
       id: "examenes",
