@@ -131,7 +131,7 @@ function renderCard(){
 }
 function renderDomain(){
   const box=$("#dgrid"); if(!box) return;
-  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>{const na=parseInt(a)||99,nb=parseInt(b)||99;return na-nb||a.localeCompare(b,'es');});return na-nb||a.localeCompare(b,'es');});
+  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>{const na=parseInt(a)||99,nb=parseInt(b)||99;return na-nb||a.localeCompare(b,'es');});
   box.innerHTML=cats.map(c=>{const all=DATA.filter(q=>q.cat===c);const kn=all.filter(q=>known.has(q.id)).length;const pct=all.length?Math.round(100*kn/all.length):0;return `<div class="ditem"><div class="dn">${esc(c)}</div><div class="db"><i style="width:${pct}%"></i></div><div class="ds">${kn}/${all.length}</div></div>`;}).join("");
 }
 function updateChrome(){
@@ -153,7 +153,7 @@ window.markKnown=()=>{const q=active[idx];if(!q)return;const was=known.has(q.id)
 window.markReview=()=>{const q=active[idx];if(!q)return;known.delete(q.id);sessionCombo=0;save();renderCard();};
 window.clearFilters=()=>{state.cat="__all__";state.exam="__all__";state.hideKnown=false;$("#fCat").value="__all__";$("#fExam").value="__all__";$("#hideKnown").checked=false;idx=0;revealed=false;buildActive();renderCard();save();};
 function initControls(){
-  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>{const na=parseInt(a)||99,nb=parseInt(b)||99;return na-nb||a.localeCompare(b,'es');});return na-nb||a.localeCompare(b,'es');});
+  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>{const na=parseInt(a)||99,nb=parseInt(b)||99;return na-nb||a.localeCompare(b,'es');});
   $("#fCat").innerHTML=`<option value="__all__">Todos los temas (${DATA.length})</option>`+cats.map(c=>`<option value="${esc(c)}">${esc(c)} (${DATA.filter(q=>q.cat===c).length})</option>`).join("");
   const exams=[...new Set(DATA.map(q=>q.exam))].sort((a,b)=>examOrderKey(DATA.find(q=>q.exam===b).code).localeCompare(examOrderKey(DATA.find(q=>q.exam===a).code)));
   $("#fExam").innerHTML=`<option value="__all__">Todos los exámenes</option>`+exams.map(e=>`<option value="${esc(e)}">${esc(e)} (${DATA.filter(q=>q.exam===e).length})</option>`).join("");
