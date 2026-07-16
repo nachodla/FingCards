@@ -13,7 +13,7 @@ FING.registerSubject({
   sigla: "SO",
   emoji: "🖥️",
   accent: "#0891b2",
-  descripcion: "Preguntas teóricas de 1er y 2º parcial: procesos, sincronización, planificación, memoria, almacenamiento y más.",
+  descripcion: "Preguntas teóricas de 1er parcial, 2º parcial y exámenes: procesos, sincronización, memoria, FS, RAID y más.",
   semestres: [
     {
       id: "1er-parcial",
@@ -38,6 +38,19 @@ FING.registerSubject({
           preguntas: 56,
           nota: "Parciales 2014 → 2025",
           url: "materias/sistemas-operativos/teorico-2do-parcial.html"
+        }
+      ]
+    },
+    {
+      id: "examenes",
+      nombre: "Exámenes · teórico",
+      recursos: [
+        {
+          titulo: "Teórico — repaso de exámenes (flashcards)",
+          tipo: "teorico",
+          preguntas: 70,
+          nota: "Exámenes 2014 → 2026 · Kernel Muncher",
+          url: "materias/sistemas-operativos/teorico-examenes.html"
         }
       ]
     }

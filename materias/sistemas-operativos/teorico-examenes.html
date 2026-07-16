@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teórico SO · Exámenes · Repaso</title>
+<style>
+:root{
+  --bg:#1a1025; --panel:#ffffff; --ink:#1e1033; --muted:#6b6280;
+  --line:#e8e0f0; --soft:#f6f2fb; --accent:#7c3aed; --accent2:#a78bfa;
+  --green:#059669; --greenbg:#ecfdf5; --blue:#2563eb; --bluebg:#eff6ff;
+  --amber:#b45309; --amberbg:#fffbeb; --pink:#db2777; --shadow:0 12px 34px rgba(76,29,149,.12);
+  --gamebg:#0f0a1a;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);background:linear-gradient(180deg,#1a1025 0,#4c1d95 240px,#f3eef9 240px,#f3eef9 100%);
+  min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1140px;margin:0 auto;padding:22px 18px 70px}
+header{color:#fff;padding:8px 2px 14px}
+.htop{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+header h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+header p{margin:0;color:#ddd6fe;font-size:13.5px}
+.badgeN{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:10px 14px;text-align:center;min-width:120px}
+.badgeN b{font-size:22px;display:block;line-height:1}
+.badgeN span{font-size:11px;color:#ddd6fe;text-transform:uppercase;letter-spacing:.5px}
+.progress{height:6px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;margin-top:10px;max-width:300px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,#c084fc,#f472b6,#34d399);width:0;transition:width .3s}
+.motibar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.mchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:9px 12px;min-width:100px}
+.mchip b{display:block;font-size:16px;line-height:1.15}
+.mchip span{font-size:10.5px;color:#ddd6fe;text-transform:uppercase;letter-spacing:.5px}
+.cheer{margin-top:10px;font-size:13px;color:#e9d5ff;min-height:18px}
+.toolbar{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:var(--shadow);margin-bottom:14px}
+.grp{display:flex;flex-direction:column;gap:3px}
+.grp label{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;padding-left:2px}
+select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 11px;cursor:pointer;transition:.15s}
+.btn{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:#6d28d9}
+.btn.ghost{background:var(--soft)}
+.btn.game{background:linear-gradient(135deg,#7c3aed,#db2777);border:0;color:#fff}
+.btn.game:disabled{opacity:.45;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:8px 13px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--muted);font-weight:600}
+.seg button.on{background:var(--accent);color:#fff}
+.chk{display:inline-flex;align-items:center;gap:7px;font-size:13px;background:var(--soft);padding:8px 12px;border-radius:10px;cursor:pointer;border:1px solid var(--line);user-select:none}
+.chk input{accent-color:var(--accent)}
+.spacer{flex:1 1 auto}
+.domain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:14px}
+.domain h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ditem{background:var(--soft);border-radius:10px;padding:8px 10px;border:1px solid var(--line)}
+.ditem .dn{font-size:12px;font-weight:700;color:#3b0764;margin-bottom:4px}
+.ditem .db{height:5px;background:#e9e0f5;border-radius:99px;overflow:hidden}
+.ditem .db i{display:block;height:100%;background:linear-gradient(90deg,#7c3aed,#db2777);width:0}
+.ditem .ds{font-size:10.5px;color:var(--muted);margin-top:3px}
+.layout{display:grid;grid-template-columns:1fr;gap:16px}
+.layout.withlist{grid-template-columns:1fr 330px}
+@media(max-width:900px){.layout.withlist{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px;min-height:340px;display:flex;flex-direction:column}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.pill{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.pill.exam{background:#f5f3ff;color:#6d28d9;border-color:#ddd6fe}
+.pill.prob{background:var(--soft);color:var(--muted)}
+.pill.topic{background:#fdf2f8;color:#be185d;border-color:#fbcfe8}
+.pill.known{background:var(--greenbg);color:var(--green);border-color:#a7f3d0}
+.q{font-size:18px;line-height:1.5;font-weight:600;letter-spacing:-.2px;margin:0 0 8px;white-space:pre-wrap}
+.qhint{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+.reveal-wrap{margin-top:auto}
+.answer{border-top:1px dashed var(--line);margin-top:18px;padding-top:18px;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.atype{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:12px}
+.atype.oficial{background:var(--greenbg);color:var(--green)}
+.atype.slides{background:var(--bluebg);color:var(--blue)}
+.atype.general{background:var(--amberbg);color:var(--amber)}
+.answer .txt{font-size:15.5px;line-height:1.62;color:#1f2937}
+.answer .txt p{margin:0 0 11px}
+.src{margin-top:14px;font-size:13px;color:var(--muted);background:var(--soft);border-radius:10px;padding:10px 13px}
+.src b{color:#3b0764}
+.note{margin-top:12px;font-size:13px;line-height:1.5;color:var(--amber);background:var(--amberbg);border:1px solid #fde68a;border-radius:10px;padding:10px 13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);align-items:center}
+.nav{display:flex;gap:8px;align-items:center;margin-left:auto}
+.pos{font-size:13px;color:var(--muted);min-width:74px;text-align:center;font-variant-numeric:tabular-nums}
+.big-reveal{width:100%;padding:14px;font-size:15px}
+.listpanel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px;max-height:640px;display:flex;flex-direction:column}
+.listpanel h3{margin:2px 2px 10px;font-size:14px}
+.search{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:13px;margin-bottom:10px}
+.list{overflow:auto;display:flex;flex-direction:column;gap:4px}
+.li{display:flex;gap:9px;align-items:flex-start;padding:9px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;font-size:12.5px;line-height:1.35}
+.li:hover{background:var(--soft)}
+.li.cur{background:#f5f3ff;border-color:#ddd6fe}
+.li .dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:0 0 auto}
+.dot.oficial{background:var(--green)}.dot.slides{background:var(--blue)}.dot.general{background:#f59e0b}
+.li .code{font-size:10.5px;color:var(--muted);font-weight:700;white-space:nowrap}
+.li .qt{color:#334155;flex:1}
+.li.done .qt{color:#94a3b8;text-decoration:line-through}
+.li .chk2{color:var(--green);font-weight:800}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.empty{text-align:center;color:var(--muted);padding:40px 10px}
+.empty b{color:var(--ink);font-size:17px}
+.kbd{font-size:11px;color:var(--muted);margin-top:14px;text-align:center}
+.kbd kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;font-family:inherit;font-size:11px}
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(16px);background:#2e1065;color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:90;max-width:92vw;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Game modal */
+.modal{position:fixed;inset:0;background:rgba(15,10,26,.72);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal.open{display:flex}
+.gbox{background:var(--gamebg);color:#e9d5ff;border-radius:18px;padding:16px;width:min(440px,100%);box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid #4c1d95}
+.gbox h2{margin:0 0 6px;font-size:18px;color:#f5d0fe}
+.gbox .gsub{font-size:12.5px;color:#c4b5fd;margin-bottom:10px;line-height:1.4}
+#gcanvas{display:block;width:100%;height:auto;background:#05030a;border-radius:12px;image-rendering:pixelated;border:2px solid #6d28d9}
+.gstats{display:flex;justify-content:space-between;gap:8px;margin:10px 0;font-size:13px;font-weight:700;color:#f0abfc}
+.gactions{display:flex;gap:8px;flex-wrap:wrap}
+.home{position:fixed;bottom:18px;left:18px;z-index:60;display:inline-flex;align-items:center;gap:7px;background:#111827;color:#fff;text-decoration:none;font:600 13px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.28)}
+</style>
+</head>
+<body>
+<a class="home" href="../../index.html">← Inicio</a>
+<div class="wrap">
+  <header>
+    <div class="htop">
+      <div>
+        <h1>Teórico SO · Exámenes</h1>
+        <p>Preguntas teóricas de exámenes · 2014–2026 · con fuentes</p>
+        <div class="progress"><i id="pbar"></i></div>
+        <div class="cheer" id="cheer"></div>
+        <div class="motibar">
+          <div class="mchip"><b id="levelN">Nv. 1</b><span>nivel</span></div>
+          <div class="mchip"><b id="xpN">0 XP</b><span>experiencia</span></div>
+          <div class="mchip"><b id="comboN">0</b><span>combo sesión</span></div>
+          <div class="mchip"><b id="tokenN">0</b><span>fichas juego</span></div>
+          <div class="mchip"><b id="hiN">0</b><span>hi-score</span></div>
+        </div>
+      </div>
+      <div class="badgeN"><b id="knownN">0</b><span>que ya sé / <span id="totalN">0</span></span></div>
+    </div>
+  </header>
+
+  <div class="domain">
+    <h4>Mapa de dominio · Exámenes</h4>
+    <div class="dgrid" id="dgrid"></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="grp"><label>Orden</label>
+      <div class="seg" id="orderSeg">
+        <button data-o="sec" class="on">Por examen</button>
+        <button data-o="rand">Aleatorio 🔀</button>
+      </div>
+    </div>
+    <div class="grp"><label>Tema</label><select id="fCat"></select></div>
+    <div class="grp"><label>Examen</label><select id="fExam"></select></div>
+    <div class="grp"><label>&nbsp;</label>
+      <label class="chk"><input type="checkbox" id="hideKnown"> Ocultar las que ya sé</label>
+    </div>
+    <div class="spacer"></div>
+    <div class="grp"><label>&nbsp;</label>
+      <button class="btn game" id="playBtn" title="Ganás 1 ficha cada 2 «la sabía» nuevas">👾 Kernel Muncher</button>
+    </div>
+    <div class="grp"><label>&nbsp;</label><button class="btn ghost" id="toggleList">☰ Lista</button></div>
+    <div class="grp"><label>&nbsp;</label><button class="btn ghost" id="resetBtn">↺ Reiniciar</button></div>
+  </div>
+
+  <div class="layout" id="layout">
+    <div class="card" id="card"></div>
+    <aside class="listpanel" id="listpanel" style="display:none">
+      <h3>📋 Índice <span id="listCount" style="color:var(--muted);font-weight:500"></span></h3>
+      <input class="search" id="search" placeholder="Buscar…">
+      <div class="list" id="list"></div>
+      <div class="legend">
+        <span><i class="dot oficial" style="width:8px;height:8px;border-radius:50%;display:inline-block"></i> Oficial</span>
+        <span><i class="dot slides" style="width:8px;height:8px;border-radius:50%;display:inline-block"></i> Diapositivas</span>
+        <span><i class="dot general" style="width:8px;height:8px;border-radius:50%;display:inline-block"></i> General</span>
+      </div>
+    </aside>
+  </div>
+  <div class="kbd">Atajos: <kbd>←</kbd> <kbd>→</kbd> · <kbd>espacio</kbd> revelar · <kbd>S</kbd> sabía · <kbd>R</kbd> repasar · <kbd>L</kbd> lista · <kbd>G</kbd> juego</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="gameModal" aria-hidden="true">
+  <div class="gbox">
+    <h2>👾 Kernel Muncher</h2>
+    <div class="gsub">Comé todas las <b style="color:#f0abfc">páginas</b> (puntos) sin que te atrape el <b style="color:#f87171">thrashing</b>. Flechas o WASD. Cada 2 preguntas que marcás como sabidas = 1 ficha. El hi-score se guarda en este navegador.</div>
+    <canvas id="gcanvas" width="360" height="280"></canvas>
+    <div class="gstats"><span>Score: <span id="gScore">0</span></span><span>Vidas: <span id="gLives">3</span></span><span>Hi: <span id="gHi">0</span></span></div>
+    <div class="gactions">
+      <button class="btn game" id="gStart">▶ Jugar (1 ficha)</button>
+      <button class="btn ghost" id="gClose" style="color:#1e1033">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = [{"id":"2014j_1","exam":"Julio 2014","code":"2014-07","problema":"P1.1","topic":"Protección de hardware","cat":"Protección de hardware","q":"Describa dos mecanismos implementados a nivel de hardware para proteger al sistema operativo.","answer":"El hardware aporta, entre otros:\n• Modo dual (usuario/monitor): las instrucciones privilegiadas solo se ejecutan en modo kernel; un trap cambia de modo al invocar servicios del SO.\n• Protección de CPU con timer: interrumpe periódicamente para que un proceso no monopolice la CPU (evita infinite loops).\n• Protección de memoria (base/límite o MMU): impide que un proceso acceda a memoria del kernel u otros procesos.\n• Protección de E/S: instrucciones de E/S privilegiadas.\n\nCualquier par coherente de estos mecanismos responde bien.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[3,4,7,8,11]}]},{"id":"2014j_2","exam":"Julio 2014","code":"2014-07","problema":"P1.2","topic":"Buffering","cat":"Entrada/Salida","q":"a) ¿Qué es un buffer?\nb) ¿Qué ventajas brinda el uso de buffering a nivel del sistema operativo?","answer":"a) Un buffer es una zona de memoria intermedia que almacena datos mientras se transfieren entre dos dispositivos, o entre un dispositivo y una aplicación.\n\nb) Razones/ventajas del buffering:\n1) Adaptar velocidades distintas entre productor y consumidor.\n2) Adaptar tamaños de transferencia distintos.\n3) Mantener la semántica de las aplicaciones: p. ej. en un write, se copia el buffer de usuario a un buffer del SO y la app puede continuar sin depender del dispositivo.","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[35]}]},{"id":"2014j_3","exam":"Julio 2014","code":"2014-07","problema":"P1.3","topic":"MLFQ","cat":"Planificación","q":"Describa el planificador de colas multinivel con retroalimentación (multi-level feedback queue).","answer":"Una multilevel feedback queue (MLFQ) tiene varias colas de listos con distinta prioridad. Los procesos pueden moverse entre colas según su comportamiento (retroalimentación):\n• Típicamente, procesos I/O-bound o interactivos suben o se mantienen en colas de alta prioridad con quantums cortos (mejor tiempo de respuesta).\n• Procesos CPU-bound que agotan el quantum bajan a colas de menor prioridad con quantums más largos.\n\nPara definirla hacen falta al menos: número de colas, algoritmo de cada cola, política de promoción/degradación y criterio de admisión de procesos nuevos.","atype":"slides","sources":[{"deck":"clase6.pdf","slides":[40,41,42]}]},{"id":"2014j_4","exam":"Julio 2014","code":"2014-07","problema":"P1.4","topic":"Reemplazo de marcos","cat":"Memoria","q":"Defina las estrategias de reemplazo de marcos (frames) local y global.","answer":"Reemplazo global: un proceso puede reemplazar cualquier frame del sistema, incluso de otro proceso; la cantidad de frames por proceso puede variar. Desventaja: los fallos de un proceso afectan a otros.\n\nReemplazo local: un proceso solo reemplaza frames de los que tiene asignados; el número de frames por proceso no varía. Desventaja: puede retener frames poco usados. El reemplazo global es el más utilizado en la práctica.","atype":"slides","sources":[{"deck":"memoria3_2026.pdf","slides":[43]}]},{"id":"2014j_5","exam":"Julio 2014","code":"2014-07","problema":"P1.5","topic":"Deadlock","cat":"Deadlock","q":"Describa las condiciones necesarias que un sistema operativo debe garantizar para prevenirse de que ocurra deadlock.","answer":"Para prevenir deadlock se niega al menos una de las condiciones de Coffman:\n1) Exclusión mutua — difícil de eliminar para recursos no compartibles.\n2) Hold and wait — p. ej. pedir todos los recursos de una vez, o liberar antes de pedir más.\n3) No expropiación — permitir quitar recursos a un proceso.\n4) Espera circular — imponer un orden total de tipos de recursos y pedir siempre en orden creciente.\n\nNegar una condición es suficiente para prevenir (en el sentido de que no se pueden dar las cuatro a la vez).","atype":"slides","sources":[{"deck":"deadlock.pdf","slides":[10,15,16,17,18]}]},{"id":"2014j_6","exam":"Julio 2014","code":"2014-07","problema":"P1.6","topic":"FAT","cat":"Sistemas de archivos","q":"Describa el método de asignación FAT (File Allocation Table) en un sistema de archivos.","answer":"FAT es una forma de asignación en lista: al inicio del volumen hay una tabla con una entrada por bloque de disco, indexada por número de bloque. Cada entrada apunta al siguiente bloque del archivo (o marca fin de archivo). El FCB/directorio guarda el primer bloque. Ventaja: se resuelve la fragmentación externa de la asignación contigua. Desventaja: acceso secuencial a la cadena, la tabla ocupa espacio y un fallo en la FAT es crítico.","atype":"slides","sources":[{"deck":"clase19.pdf","slides":[34,35]}]},{"id":"2014j_7","exam":"Julio 2014","code":"2014-07","problema":"P1.7","topic":"DMA","cat":"Entrada/Salida","q":"Describa cómo funciona el método DMA (Direct Memory Access).","answer":"DMA usa un controlador/chip que transfiere datos entre dispositivo y memoria sin intervención continua de la CPU. El procesador programa el DMA (dirección, tamaño, dirección del dispositivo); el DMA realiza la transferencia en paralelo e interrumpe al procesador al terminar. Reduce la carga de CPU frente a E/S programada o a interrupciones por cada byte.","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[18,20]}]},{"id":"2014j_8","exam":"Julio 2014","code":"2014-07","problema":"P1.8","topic":"Servicios del SO","cat":"Estructura del SO","q":"Describa los cuatro servicios básicos que debe brindar un sistema operativo.","answer":"Servicios básicos típicos del material:\n1) Ejecución de programas y administración de procesos.\n2) Operaciones de entrada/salida.\n3) Manipulación de sistemas de archivos.\n4) Comunicación entre procesos.\n5) Detección y manejo de errores/excepciones.\n\n(También se mencionan asignación de recursos, contabilización y protección.) Cuatro de los básicos bastan.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[30]}]},{"id":"2014d_1","exam":"Diciembre 2014","code":"2014-12","problema":"P1.1","topic":"EAT","cat":"Memoria","q":"En el contexto de Memoria Virtual, plantee la ecuación para hallar la EAT (effective access time) y explique cada uno de sus términos.","answer":"Con TLB, una forma habitual es:\nEAT = t_TLB + hit_ratio × t_mem + (1 − hit_ratio) × (t_tabla + t_mem)\n\ndonde t_TLB es el tiempo de búsqueda en la TLB, hit_ratio la fracción de hits, t_mem el acceso a memoria del dato, y t_tabla el costo de resolver el frame en la tabla de páginas ante un miss (a menudo otro acceso a memoria; en multinivel puede ser más).\n\nSin TLB, cada acceso lógico implica acceso a la tabla + acceso al dato (≈ 2 × t_mem).","atype":"slides","sources":[{"deck":"memoria2_2026.pdf","slides":[27,28,29]}]},{"id":"2014d_3","exam":"Diciembre 2014","code":"2014-12","problema":"P1.3","topic":"NRU","cat":"Memoria","q":"Explique cómo funciona el algoritmo NRU (Not Recently Used).","answer":"NRU es un algoritmo de segunda oportunidad mejorado. Asocia a cada página un bit de referencia (se activa al leer/escribir) y un bit de modificación (al escribir). Periódicamente se limpia el bit de referencia. Con los bits se clasifican las páginas en 4 clases: (0,0) no ref. ni mod.; (0,1) no ref. pero mod.; (1,0) ref. no mod.; (1,1) ref. y mod. Se elige una víctima de la clase no vacía de menor número. Es simple y favorece páginas no usadas recientemente; requiere soporte de hardware para los bits.","atype":"slides","sources":[{"deck":"memoria3_2026.pdf","slides":[36,37]}]},{"id":"2014d_6","exam":"Diciembre 2014","code":"2014-12","problema":"P1.6","topic":"Monitores","cat":"Monitores","q":"Describa cómo funcionan las operaciones signal() y wait() sobre variables de tipo Condition en monitores.","answer":"wait(): el proceso se bloquea en la cola de esa condition y libera el monitor (no lo ocupa mientras espera).\nsignal(): si hay procesos en la cola, despierta al primero; si no hay, no tiene efecto.\n\nSemánticas: Hoare — el señalizador cede y el despertado entra de inmediato; Mesa — el señalizador sigue y el despertado queda listo. Si signal es la última instrucción del procedimiento, ambas se comportan similar.","atype":"slides","sources":[{"deck":"monitores_2026.pdf","slides":[9,12,13]}]},{"id":"2014d_7","exam":"Diciembre 2014","code":"2014-12","problema":"P1.7","topic":"Puerto de E/S","cat":"Entrada/Salida","q":"i. Describa los cuatro registros que generalmente componen un puerto de E/S.\nii. Explique el método de entrada/salida por interrupciones.","answer":"i. Típicamente: status (lectura: estado del dispositivo), control (escritura: pedidos/modo), data-in (lectura: datos del dispositivo), data-out (escritura: datos al dispositivo).\n\nii. E/S por interrupciones: el proceso inicia el pedido, se bloquea y el planificador da la CPU a otro. Al completar, el dispositivo interrumpe; el handler registra la completitud y desbloquea al proceso. La CPU no hace busy waiting.","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[10,14,15]}]},{"id":"2014d_8","exam":"Diciembre 2014","code":"2014-12","problema":"P1.8","topic":"Despachador","cat":"Planificación","q":"i. Indique qué función cumple el Despachador.\nii. Describa los pasos que debe realizar el Despachador para cumplir su tarea.","answer":"i. Da el control de la CPU al proceso elegido por el planificador de corto plazo. Su latencia debe ser mínima.\n\nii. Pasos:\n1) Cambio de contexto: salvar registros del saliente en su PCB; cargar registros del entrante.\n2) Cambiar el bit de modo a usuario.\n3) Saltar a la instrucción (PC) del proceso entrante.","atype":"slides","sources":[{"deck":"clase6.pdf","slides":[6]}]},{"id":"2015f_2","exam":"Febrero 2015","code":"2015-02","problema":"P1.2","topic":"Modo dual y CPU","cat":"Protección de hardware","q":"i. Indique para qué sirve el modo dual.\nii. Indique cómo puede un SO evitar el excesivo uso de CPU por parte de un proceso.","answer":"i. Separar ejecución privilegiada (kernel) de la de usuario: solo el SO ejecuta instrucciones peligrosas (E/S, MMU, timer). Los procesos piden servicios vía trap/system call.\n\nii. Con protección de CPU: timer que interrumpe; al agotar el contador se quita la CPU y se replanifica (quantum / preemption).","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[4,11,12]}]},{"id":"2015f_6","exam":"Febrero 2015","code":"2015-02","problema":"P1.6","topic":"Fragmentación","cat":"Memoria","q":"Describa qué entiende por fragmentación interna y fragmentación externa.","answer":"Fragmentación interna: espacio desperdiciado dentro de una unidad de asignación (p. ej. página/frame o bloque de disco) porque el proceso no usa todo el bloque.\n\nFragmentación externa: huecos libres entre regiones asignadas de distinto tamaño; hay memoria libre total suficiente pero no contigua para un pedido. Típica de segmentación/asignación contigua; la paginación la evita a costa de interna.","atype":"slides","sources":[{"deck":"memoria2_2026.pdf","slides":[24,25]}]},{"id":"2015f_8","exam":"Febrero 2015","code":"2015-02","problema":"P1.8","topic":"Working Set","cat":"Memoria","q":"Describa el modelo de Conjunto de Trabajo (Working Set).","answer":"Basado en localidad: el working set WS(t, Δ) es el conjunto de páginas referenciadas en la ventana de tiempo Δ más reciente. La demanda total D = Σ |WS_i|. Si D supera los frames disponibles hay thrashing. El SO puede usar el working set para asignar frames o suspender procesos y evitar hiperpaginación.","atype":"slides","sources":[{"deck":"memoria3_2026.pdf","slides":[48,49,50]}]},{"id":"2015j_1","exam":"Julio 2015","code":"2015-07","problema":"P1.1","topic":"Métricas de planificación","cat":"Planificación","q":"Defina: i) tiempo de retorno ii) tiempo de espera iii) tiempo de respuesta iv) utilización de CPU.","answer":"• Tiempo de retorno (turnaround): desde que el proceso se carga/llega hasta que finaliza.\n• Tiempo de espera: tiempo en la cola de listos (sin contar ejecución ni bloqueos de E/S, según definición del curso: suma de intervalos en ready).\n• Tiempo de respuesta: desde la llegada hasta la primera respuesta/ejecución (importante en interactivos).\n• Utilización de CPU: fracción del tiempo en que la CPU no está ociosa.","atype":"slides","sources":[{"deck":"clase6.pdf","slides":[12,13]}]},{"id":"2015j_8","exam":"Julio 2015","code":"2015-07","problema":"P1.8","topic":"Thrashing","cat":"Memoria","q":"Describa el problema de hiperpaginación (thrashing) y un método para evitarlo.","answer":"Thrashing: el proceso (o el sistema) pasa más tiempo paginando que ejecutando porque no tiene suficientes frames para su localidad; tasa de fallos altísima y rendimiento colapsa.\n\nMétodos: modelo Working-Set (asignar frames según WS; si D > frames disponibles, suspender procesos); o controlar por frecuencia de fallos (PFF): si supera umbral superior dar más frames; si baja del inferior, liberar.","atype":"slides","sources":[{"deck":"memoria3_2026.pdf","slides":[47,48,52]}]},{"id":"2016f_5","exam":"Febrero 2016","code":"2016-02","problema":"P1.5","topic":"E/S programada vs DMA","cat":"Entrada/Salida","q":"a) Compare E/S programada (Programmed I/O) y DMA.\nb) Describa los pasos de una E/S a través de DMA.","answer":"a) Programmed I/O: la CPU inicia y hace polling/busy waiting del estado; simple pero gasta CPU. DMA: la CPU programa un controlador que mueve datos a/desde memoria y solo interrumpe al final; mejor para volúmenes altos.\n\nb) Pasos típicos: (1) CPU configura DMA (dirección memoria, dispositivo, conteo, dirección R/W); (2) CPU continúa otras tareas; (3) DMA transfiere; (4) DMA interrumpe; (5) handler atiende la finalización.","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[12,18,20]}]},{"id":"2016j_raid","exam":"Julio 2016","code":"2016-07","problema":"P1 RAID","topic":"RAID 0+1","cat":"Almacenamiento y RAID","q":"Explique el sistema RAID 0+1 y compárelo con RAID 0 y RAID 1.","answer":"RAID 0: striping sin redundancia → performance, sin tolerancia a fallos.\nRAID 1: espejado → redundancia, capacidad efectiva ~N/2.\nRAID 0+1: primero striping y luego espejo (espejo de divisiones): combina performance del 0 con redundancia del 1, a costa de capacidad (como espejo) y complejidad. (RAID 1+0 es el orden inverso: striping de espejos.)","atype":"slides","sources":[{"deck":"clase21.pdf","slides":[38,41,55]}]},{"id":"2017j_tlb","exam":"Julio 2017","code":"2017-07","problema":"P1 TLB","topic":"TLB y ASID","cat":"Memoria","q":"i. ¿Para qué se utiliza la TLB?\nii. ¿Qué ventajas agrega el uso de ASID en una TLB?","answer":"i. La TLB (Translation Lookaside Buffer) cachea traducciones página→frame para no consultar la tabla de páginas en cada acceso. Hit: frame inmediato; miss: se resuelve en la tabla y se carga en la TLB.\n\nii. ASID (Address Space Identifier) etiqueta entradas de la TLB con el proceso dueño. Evita invalidar toda la TLB en cada context switch y reduce miss tras cambios de proceso.","atype":"slides","sources":[{"deck":"memoria2_2026.pdf","slides":[27,28,29]}]},{"id":"2018j_1","exam":"Julio 2018","code":"2018-07","problema":"P1.1","topic":"Hipervisor tipo 1","cat":"Virtualización","q":"Describa brevemente qué es un Hipervisor de Tipo 1.","answer":"Hipervisor de tipo 1 (bare-metal): ejecuta directamente sobre el hardware en modo privilegiado/kernel y da soporte a varias VMs. Atrapa instrucciones sensibles del guest y emula el hardware. Ejemplos típicos: Xen, ESXi, Hyper-V (según material del curso). No necesita un SO anfitrión completo debajo (a diferencia del tipo 2).","atype":"slides","sources":[{"deck":"virtualizacion.pdf","slides":[7,13,16]}]},{"id":"2019f_batch","exam":"Febrero 2019","code":"2019-02","problema":"P1 (a)","topic":"Tipos de sistemas","cat":"Estructura del SO","q":"Describa brevemente: sistemas batch, de tiempo compartido, de tiempo real y distribuidos.","answer":"• Batch: trabajos se agrupan y ejecutan sin interacción continua del usuario; priorizan throughput.\n• Tiempo compartido: multiprogramación interactiva; la CPU se reparte (quantums) para dar respuesta a varios usuarios.\n• Tiempo real: plazos temporales; hard (fallo si se incumple) vs soft (prioridad alta pero menos estricto).\n• Distribuidos: varios nodos cooperan vía red compartiendo recursos y/o cómputo.","atype":"slides","sources":[{"deck":"clase2.pdf","slides":[15,16,22,23]}]},{"id":"2019f_vfs","exam":"Diciembre 2019","code":"2019-12","problema":"P1 (e)","topic":"VFS","cat":"Sistemas de archivos","q":"Defina sistema de archivos virtual y describa brevemente sus funcionalidades más importantes.","answer":"VFS (Virtual File System) es una capa cuando el SO accede a varias implementaciones de FS (ext4, ntfs, etc.) con técnicas de OO para una estructura independiente del FS concreto. Se ubica entre las syscalls y la implementación específica.\n\nFunciones clave: (1) interfaz genérica de FS (acceso transparente); (2) FCB/inodo virtual que puede representar archivos locales o remotos.","atype":"slides","sources":[{"deck":"clase19.pdf","slides":[45,46]}]},{"id":"2019f_alloc","exam":"Diciembre 2019","code":"2019-12","problema":"P1 (f)","topic":"Asignación de disco","cat":"Sistemas de archivos","q":"Describa tres métodos para la asignación de espacio de disco. Mencione una desventaja de cada uno.","answer":"1) Contigua: bloques seguidos; FCB con inicio y tamaño. Desv.: fragmentación externa y difícil crecimiento.\n2) Lista/linked (p. ej. FAT): cadena de bloques. Desv.: acceso secuencial costoso; punteros ocupan espacio.\n3) Indexada: index block/inode con punteros a bloques. Desv.: el índice ocupa espacio; archivos grandes necesitan indirecciones.","atype":"slides","sources":[{"deck":"clase19.pdf","slides":[32,33,34,37]}]},{"id":"2019j_thrash","exam":"Julio 2019","code":"2019-07","problema":"P1 (a)","topic":"Hiperpaginación","cat":"Memoria","q":"Describa brevemente qué es la Hiperpaginación. ¿Qué efectos puede tener sobre el Sistema Operativo?","answer":"Hiperpaginación (thrashing): el sistema o un proceso gasta la mayor parte del tiempo en fallos de página y E/S de paginación en vez de trabajo útil, porque no hay frames suficientes para la localidad.\n\nEfectos: colapso del throughput, uso de CPU bajo (espera disco), posible cascada si se sube multiprogramación pensando que la CPU está ociosa.","atype":"slides","sources":[{"deck":"memoria3_2026.pdf","slides":[47,48]}]},{"id":"2019j_coffman","exam":"Julio 2019","code":"2019-07","problema":"P1 (c)","topic":"Deadlock","cat":"Deadlock","q":"Describa las 4 condiciones necesarias para deadlock. ¿En qué condición se convierten en suficientes? Elija una y mencione una estrategia de prevención.","answer":"Coffman: (1) exclusión mutua (2) hold and wait (3) no expropiación (4) espera circular. Las cuatro son necesarias; con una sola instancia de cada recurso, un ciclo (espera circular) las hace suficientes para deadlock.\n\nPrevención por espera circular: orden total de recursos y pedir solo en orden creciente.","atype":"slides","sources":[{"deck":"deadlock.pdf","slides":[10,15,18]}]},{"id":"2019j_dac","exam":"Julio 2019","code":"2019-07","problema":"P1 (f)","topic":"DAC vs MAC","cat":"Seguridad","q":"Describa brevemente DAC (Discretionary Access Control) y MAC (Mandatory Access Control).","answer":"DAC: el dueño/usuario puede gestionar (permitir/denegar) el acceso a un recurso; control basado en identidad (IBAC). Ejemplo: permisos owner/group/others de UNIX.\n\nMAC: el sistema impone reglas de acceso que el individuo no puede alterar (basado en reglas). Ejemplos de orientación MAC: SELinux, Trusted Solaris.","atype":"slides","sources":[{"deck":"Seguridad-sistoper-Intro.pdf","slides":[41]},{"deck":"Seguridad-sistoper-UNIX.pdf","slides":[16,31]}]},{"id":"2019d_hiper","exam":"Diciembre 2019","code":"2019-12","problema":"P1 (h)","topic":"Hipervisores","cat":"Virtualización","q":"Describa y compare hipervisores tipo I y II.","answer":"Tipo 1: corre sobre el hardware (kernel), controla VMs, atrapa sensibles. Mejor performance potencial.\nTipo 2: corre como proceso del SO host en modo usuario; usa traducción binaria para arquitecturas que no cumplen Popek & Goldberg; puede reutilizar drivers del host. Más simple de instalar, más overhead típico.","atype":"slides","sources":[{"deck":"virtualizacion.pdf","slides":[7,14,15,16]}]},{"id":"2020f_sched","exam":"Febrero 2020","code":"2020-02","problema":"P1 (a)","topic":"Planificador y despachador","cat":"Planificación","q":"i. Explique planificador y despachador (tareas y propiedades deseables).\nii. ¿Qué pasa en Round Robin si el quantum es mayor que la tarea más larga?","answer":"i. Planificador (corto plazo): elige el próximo proceso listo; debe ser eficiente (se invoca mucho). Despachador: realiza el cambio de contexto, modo usuario y salto al PC; latencia mínima.\n\nii. Si el quantum es mayor que cualquier ráfaga, ningún proceso se expropia por quantum: RR se comporta como FCFS (no se corta por tiempo).","atype":"slides","sources":[{"deck":"clase6.pdf","slides":[5,6,35]}]},{"id":"2020f_io_regs","exam":"Febrero 2020","code":"2020-02","problema":"P1 (e)","topic":"Registros de controladora","cat":"Entrada/Salida","q":"Mencione, describa y compare los métodos de acceso a los registros de una controladora de E/S.","answer":"1) Mapeo en memoria (MMIO): registros aparecen como direcciones de memoria; se leen/escriben con load/store.\n2) Puertos / instrucciones especiales (IN/OUT): cada registro tiene un número de puerto; instrucciones privilegiadas acceden a la controladora.\n\nComparación: MMIO unifica el modelo de acceso; puertos separan el espacio de E/S del de memoria y suelen ser privilegiados explícitamente.","atype":"oficial","sources":[{"deck":"clase22.pdf","slides":[10]}]},{"id":"2021f_block","exam":"Febrero 2021","code":"2021-02","problema":"P1 Q1","topic":"E/S bloqueante","cat":"Entrada/Salida","q":"¿Cómo se denomina el tipo de E/S en que los procesos se bloquean hasta que el pedido finalice? ¿Existe otra manera? Descríbala.","answer":"E/S bloqueante (blocking I/O): el proceso se suspende hasta completar la operación.\n\nAlternativas: E/S no bloqueante (retorna pronto, posiblemente con datos parciales) y/o asincrónica (el control vuelve de inmediato y se notifica al terminar). También se contrastan métodos programados, por interrupción y DMA a nivel de implementación.","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[28]}]},{"id":"2021f_euid","exam":"Febrero 2021","code":"2021-02","problema":"P1 Q2","topic":"UID efectivo","cat":"Seguridad","q":"En control de acceso UNIX, ¿es posible que el UID efectivo sea distinto del real? Justifique.","answer":"Sí. El UID real identifica al usuario que lanzó el proceso; el efectivo es el que se usa para chequear permisos. Pueden diferir, p. ej. con SetUID: al ejecutar un binario con bit s, el UID efectivo pasa a ser el del dueño del archivo (p. ej. root en passwd) aunque el real sea el del usuario.","atype":"slides","sources":[{"deck":"Seguridad-sistoper-UNIX.pdf","slides":[14,24]}]},{"id":"2021f_tipo2","exam":"Febrero 2021","code":"2021-02","problema":"P1 Q3","topic":"Hipervisor tipo 2","cat":"Virtualización","q":"¿Qué tipo de hipervisor usaría para crear VMs con distintos SO usando un software que corre sobre un SO anfitrión? Describa brevemente cómo funciona.","answer":"Hipervisor de tipo 2: corre en modo usuario como proceso del host. Analiza el flujo del guest y hace traducción binaria de instrucciones sensibles; bloques traducidos se cachean y ejecutan en CPU. Ejemplos: VirtualBox, VMware Workstation.","atype":"slides","sources":[{"deck":"virtualizacion.pdf","slides":[14,15,16]}]},{"id":"2021j_fork","exam":"Julio 2021","code":"2021-07","problema":"P1 Q2","topic":"fork y memoria","cat":"Procesos e hilos","q":"Tras fork, el hijo hace value+=15 y termina; el padre hace wait y printf(value). ¿Qué imprime el padre? Justifique.","answer":"Imprime 5. fork duplica el proceso: hijo y padre tienen espacios de memoria independientes (value no se comparte). El hijo modifica su copia; el padre conserva value=5.","atype":"oficial","sources":[{"deck":"clase5.pdf","slides":[15,17]}]},{"id":"2021j_mutex","exam":"Julio 2021","code":"2021-07","problema":"P1 Q3","topic":"Kernel simétrico","cat":"Estructura del SO","q":"SO multiprocesador simétrico con un único semáforo global Ker_mutex alrededor de todas las syscalls. ¿Agregar más procesadores soluciona un problema de performance?","answer":"No necesariamente (en general no). Un único mutex serializa todo el kernel: solo un procesador a la vez ejecuta código de syscall. Más CPUs no escalan el camino del kernel; el mutex se vuelve cuello de botella. Hace falta reentrada fina del kernel (locks por subestructura), no un big kernel lock único.","atype":"general","sources":[{"deck":"clase2.pdf","slides":[21,22]}],"note":"Respuesta de razonamiento sobre big kernel lock; las slides hablan de simétricos/reentrancia. Verificar con el criterio del docente si dieron esta exacta."},{"id":"2021d_raid","exam":"Diciembre 2021","code":"2021-12","problema":"P1 (a)","topic":"RAID 5 vs 6","cat":"Almacenamiento y RAID","q":"Compare RAID 5 y RAID 6 e indique el espacio utilizable con 4 discos de 2 TB en cada caso.","answer":"RAID 5: striping con una paridad distribuida; tolera 1 disco fallido. Capacidad: (N−1)×tamaño → 3×2 = 6 TB.\nRAID 6: dos paridades; tolera 2 fallos. Capacidad: (N−2)×tamaño → 2×2 = 4 TB.\nRAID 6 ofrece más tolerancia a costa de menos capacidad y escrituras más caras.","atype":"slides","sources":[{"deck":"clase21.pdf","slides":[49,50,43]}]},{"id":"2021d_mlfq","exam":"Diciembre 2021","code":"2021-12","problema":"P1 (b)","topic":"MLFQ","cat":"Planificación","q":"Describa brevemente una multilevel feedback queue y enumere las características mínimas para definirla.","answer":"MLFQ: varias colas de distinta prioridad; los procesos migran según uso de CPU (feedback). Características mínimas: (1) cuántas colas, (2) algoritmo de cada cola, (3) cuándo subir/bajar de cola, (4) en qué cola entran los procesos nuevos (y cómo se elige entre colas).","atype":"slides","sources":[{"deck":"clase6.pdf","slides":[40,41]}]},{"id":"2021d_block","exam":"Diciembre 2021","code":"2021-12","problema":"P1 (c)","topic":"E/S bloqueante vs no","cat":"Entrada/Salida","q":"Diferencias entre operación de E/S bloqueante y no bloqueante.","answer":"Bloqueante: el proceso se suspende hasta que la operación termina; fácil de programar.\nNo bloqueante: el llamado retorna tan pronto como sea posible (puede devolver menos datos de los pedidos); el proceso sigue sin esperar la completitud total.","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[28]}]},{"id":"2021d_para","exam":"Diciembre 2021","code":"2021-12","problema":"P1 (d)","topic":"Paravirtualización","cat":"Virtualización","q":"Describa el mecanismo de virtualización denominado paravirtualización.","answer":"Se modifica el SO invitado para que, en lugar de instrucciones sensibles, invoque explícitamente al hipervisor (hipercalls/API). Evita atrapar/traducir esas instrucciones; permite optimizaciones (p. ej. updates de tablas de páginas en batch). Requiere guest consciente del hipervisor.","atype":"slides","sources":[{"deck":"virtualizacion.pdf","slides":[17,22]}]},{"id":"2021d_760","exam":"Diciembre 2021","code":"2021-12","problema":"P1 (e)","topic":"Permisos UNIX","cat":"Seguridad","q":"Indique qué significa que un archivo tenga permisos 760 en UNIX.","answer":"Notación octal rwxrwxrwx: 7=rwx, 6=rw-, 0=---.\n760 → dueño: rwx; grupo: rw-; otros: ninguno.\nEl dueño lee/escribe/ejecuta; el grupo lee/escribe; el resto no accede.","atype":"slides","sources":[{"deck":"Seguridad-sistoper-UNIX.pdf","slides":[16,20]}]},{"id":"2022j_share","exam":"Julio 2022","code":"2022-07","problema":"P1 (a)","topic":"Memoria compartida de código","cat":"Memoria","q":"40 usuarios, editor 150 KB código + 50 KB datos + 50 KB stack, páginas 50 KB. ¿Cuánta memoria sin compartir código vs compartiendo código? (ignorar tablas de páginas)","answer":"Páginas: código 150/50=3, datos 1, stack 1 → 5 páginas/proceso si no se comparte.\nSin compartir: 40×(150+50+50)=40×250=10000 KB.\nCompartiendo código: código una sola vez 150 KB + 40×(50+50)=150+4000=4150 KB.\n(O en páginas: 3 compartidas + 40×2 = 83 páginas × 50 KB = 4150 KB.)","atype":"oficial","sources":[]},{"id":"2022j_mx1","exam":"Julio 2022","code":"2022-07","problema":"P1 (b)","topic":"Modelo Mx1","cat":"Procesos e hilos","q":"Modelo Mx1: características. Si un hilo de P1 hace E/S, ¿qué pasa con el resto?","answer":"Mx1: muchos hilos de usuario sobre un kernel thread. El kernel solo ve un hilo de control por proceso; la planificación fina es en usuario.\nSi un hilo se bloquea en E/S (syscall bloqueante), se bloquea el kernel thread y por tanto todo el proceso: el resto de hilos de usuario no pueden ejecutar.","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[35,36]}]},{"id":"2022j_syscall","exam":"Julio 2022","code":"2022-07","problema":"P1 (c)","topic":"System calls","cat":"Llamadas al sistema","q":"Describa: i) características de una System Call ii) pasos de la llamada iii) maneras de enviar/recibir parámetros.","answer":"i) Interfaz del núcleo para servicios del SO; se invoca en usuario y se ejecuta en kernel.\nii) Cargar parámetros; cargar número de syscall; trap; hardware a modo kernel + handler; validar e invocar; poner retorno en registro; volver a usuario.\niii) Registros; bloque de memoria apuntado por registro; stack del proceso.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[14,15,16]}]},{"id":"2022d_cpu","exam":"Diciembre 2022","code":"2022-12","problema":"P1 (a)","topic":"Protección de CPU","cat":"Protección de hardware","q":"Describa cómo funciona la protección de CPU. ¿Por qué no alcanza solo un planificador adecuado?","answer":"Timer + interrupciones: el SO carga un contador; al llegar a 0 se quita la CPU y se replanifica. La carga del timer es privilegiada.\n\nUn planificador “bueno” no basta: sin hardware de timer, un proceso en infinite loop en modo usuario nunca invoca al SO ni cede la CPU; el planificador no se ejecuta. Hace falta el mecanismo de hardware.","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[11,12]}]},{"id":"2022d_pcb","exam":"Diciembre 2022","code":"2022-12","problema":"P1 (c)","topic":"PCB y registros","cat":"Procesos e hilos","q":"¿Por qué el PCB reserva lugar para los registros de la CPU? ¿Qué pasaría si no existiera?","answer":"Para guardar el estado de la CPU del proceso cuando no está ejecutando (context switch). Si no se salvan/restauran, al reanudar el proceso perdería el contenido de registros/PC/flags y la ejecución sería incorrecta o imposible de reanudar de forma coherente.","atype":"slides","sources":[{"deck":"clase5.pdf","slides":[13,25]}]},{"id":"2022d_buf","exam":"Diciembre 2022","code":"2022-12","problema":"P1 (f)","topic":"Buffering","cat":"Entrada/Salida","q":"¿Qué motiva el servicio de buffering del subsistema de E/S?","answer":"Adaptar velocidades entre dispositivos/apps, adaptar tamaños de transferencia y desacoplar la semántica de la aplicación del dispositivo (copiar a buffers del SO para que el write del usuario no dependa del ritmo del hardware).","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[35]}]},{"id":"2023f_tipo1","exam":"Febrero 2023","code":"2023-02","problema":"P1 (d)","topic":"Hipervisor tipo 1","cat":"Virtualización","q":"Describa brevemente qué es un Hipervisor de Tipo 1.","answer":"Hipervisor bare-metal que ejecuta sobre el hardware y da soporte a máquinas virtuales ejecutando operaciones privilegiadas en nombre de los guests (traps de instrucciones sensibles). No depende de un SO anfitrión de propósito general como el tipo 2.","atype":"slides","sources":[{"deck":"virtualizacion.pdf","slides":[7]}]},{"id":"2023j_linked","exam":"Julio 2023","code":"2023-07","problema":"P1 (a)","topic":"Asignación lista vs indexada","cat":"Sistemas de archivos","q":"Describa asignación en lista (linked) e indexada. Dé una ventaja de cada una respecto de la otra.","answer":"Lista: bloques encadenados; basta puntero al primero. Ventaja vs indexada: no necesita un bloque de índice aparte (menos overhead fijo en archivos chicos). Desventaja: acceso no aleatorio eficiente.\nIndexada: tabla/index block con punteros a todos los bloques. Ventaja vs lista: acceso directo a cualquier bloque. Desventaja: el índice ocupa espacio.","atype":"slides","sources":[{"deck":"clase19.pdf","slides":[34,37]}]},{"id":"2023j_free","exam":"Julio 2023","code":"2023-07","problema":"P1 (b)","topic":"Bloques libres","cat":"Sistemas de archivos","q":"Describa las técnicas de grouping y counting para administrar bloques libres.","answer":"Son optimizaciones sobre la lista de bloques libres:\n• Counting: si hay n bloques libres contiguos, se guarda dirección del primero y el contador n (en vez de n nodos).\n• Grouping: se usa un bloque libre para guardar direcciones de varios bloques libres (y uno apunta al siguiente grupo).\nAmbas reducen el espacio/tiempo de la lista simple de libres.","atype":"slides","sources":[{"deck":"clase19.pdf","slides":[40,41]}],"note":"Si la numeración de slides de clase19 difiere en tu PDF, buscá 'counting'/'grouping' en administración de espacio libre."},{"id":"2023j_hard","exam":"Julio 2023","code":"2023-07","problema":"P1 (c)","topic":"Hardlink","cat":"Sistemas de archivos","q":"Describa qué es un hardlink y mencione dos diferencias con un softlink.","answer":"Hardlink: otra entrada de directorio que apunta al mismo inodo (mismos datos). Softlink: archivo/inodo aparte cuyo contenido es una ruta.\n\nDiferencias: (1) hardlink comparte inodo y sube el link count; softlink no. (2) softlink puede cruzar filesystems y apuntar a dirs con más flexibilidad; hardlink suele limitarse al mismo FS y no a directorios (según UNIX clásico).","atype":"slides","sources":[{"deck":"clase19.pdf","slides":[19,42,43]}]},{"id":"2023j_hw","exam":"Julio 2023","code":"2023-07","problema":"P1 (e)","topic":"Protección hardware","cat":"Protección de hardware","q":"Describa brevemente los cuatro mecanismos de hardware necesarios para garantizar la protección del sistema de forma eficiente.","answer":"Del material de protección de hardware:\n1) Modo dual (usuario/monitor).\n2) Protección de E/S (instrucciones privilegiadas).\n3) Protección de memoria (base/límite o MMU).\n4) Protección de CPU (timer).","atype":"slides","sources":[{"deck":"clase4.pdf","slides":[3,4,7,8,11]}]},{"id":"2023j_pf","exam":"Julio 2023","code":"2023-07","problema":"P1 (f)","topic":"Fallo de página","cat":"Memoria","q":"¿En qué circunstancias ocurren fallos de página en memoria virtual? Describa las acciones del SO.","answer":"Cuando se referencia una página válida del espacio del proceso que no está residente (bit de validez en off), o en chequeo previo si la dirección es inválida (segfault).\n\nAcciones típicas de la rutina: (1) buscar frame libre o elegir víctima (reemplazo) y posiblemente escribirla al backing store; (2) leer la página del disco al frame; (3) actualizar tabla de páginas y PCB; (4) reanudar la instrucción interrumpida.","atype":"slides","sources":[{"deck":"memoria3_2026.pdf","slides":[15,16,17,18]}]},{"id":"2023d_popek","exam":"Diciembre 2023","code":"2023-12","problema":"P1 (a)","topic":"Popek y Goldberg","cat":"Virtualización","q":"i. Según Popek y Goldberg, ¿cuáles son las instrucciones sensibles?\nii. ¿Qué requerimientos adicionales hay para la virtualización?","answer":"i. Sensibles: operaciones de E/S, configuración de MMU, administración de interrupciones (alteran o consultan estado privilegiado del sistema).\n\nii. La VM debe comportarse como máquina real; modos kernel/usuario; sensibles deben ejecutarse en kernel; privilegiadas generan trap en usuario; para virtualizar eficientemente, las sensibles deben ser subconjunto de las privilegiadas.","atype":"oficial","sources":[{"deck":"virtualizacion.pdf","slides":[8,9,10]}]},{"id":"2023d_tlb","exam":"Diciembre 2023","code":"2023-12","problema":"P1 (c)","topic":"TLB y EAT","cat":"Memoria","q":"Explique el soporte hardware de caché de tabla de páginas (TLB) y calcule EAT con hit 70%, t_mem=150 ns, búsqueda TLB=10 ns (tabla = 1 acceso a memoria).","answer":"TLB: caché asociativa clave=página → valor=frame. Hit: se forma la física al toque. Miss: se lee la tabla en memoria y se actualiza la TLB.\n\nEAT = t_TLB + hit×t_mem + (1−hit)×(2×t_mem)\n= 10 + 0.7×150 + 0.3×300 = 10 + 105 + 90 = 205 ns.\n\n(La solución oficial del examen usa esa fórmula.)","atype":"oficial","sources":[{"deck":"memoria2_2026.pdf","slides":[27,28]}]},{"id":"2024f_sys","exam":"Febrero 2024","code":"2024-02","problema":"P1 (a)","topic":"System calls","cat":"Llamadas al sistema","q":"I. Tareas de una System Call. II. Maneras de enviar/recibir parámetros.","answer":"Tareas: cargar parámetros; cargar número de syscall; trap; hardware a modo monitor + handler valida e invoca; retorno en registro; volver a usuario.\n\nParámetros: (1) registros (cantidad limitada); (2) bloque de memoria apuntado por un registro; (3) stack del proceso (push/pop).","atype":"oficial","sources":[{"deck":"clase4.pdf","slides":[15,16]}]},{"id":"2024f_links","exam":"Febrero 2024","code":"2024-02","problema":"P1 (b)","topic":"Hardlink y softlink","cat":"Sistemas de archivos","q":"¿Qué es soft link y hard link? Si se crea hardlink.file a source.file y luego se borra source.file, ¿qué pasa al acceder hardlink.file?","answer":"Hardlink: entrada de directorio extra al mismo inodo (link count++). Softlink: inodo nuevo con una ruta en sus datos.\n\nAl borrar source.file el link count baja en 1 pero hardlink.file sigue apuntando al inodo: se accede al contenido sin problemas mientras quede ≥1 referencia.","atype":"oficial","sources":[{"deck":"clase19.pdf","slides":[42,43]}]},{"id":"2024f_disp","exam":"Febrero 2024","code":"2024-02","problema":"P1 (c)","topic":"Despachador","cat":"Planificación","q":"Context switch de P1 a P2: ¿qué componente lo hace y qué tareas realiza?","answer":"Despachador. Tareas: salvar/cargar registros (context switch vía PCB), poner modo usuario, saltar al PC del entrante. Latencia mínima. El planificador elige a quién; el despachador ejecuta el cambio.","atype":"oficial","sources":[{"deck":"clase6.pdf","slides":[6]}]},{"id":"2024j_link","exam":"Julio 2024","code":"2024-07","problema":"P1 (a) i","topic":"Enlazado estático/dinámico","cat":"Memoria","q":"Explique enlazado estático y dinámico de bibliotecas, diferencias, ventaja/desventaja y cuándo se cargan.","answer":"Estático: en el link se incorpora el código de la biblioteca al ejecutable. Desv.: copias redundantes en memoria si muchos procesos usan la misma lib. Se resuelve en tiempo de link/compilación.\n\nDinámico: el ejecutable guarda referencias; las libs se cargan/comparten en ejecución. Ventaja: menos memoria y actualizaciones centralizadas. Desv.: requiere soporte del SO y puede haber fallos de página/overhead. Carga en tiempo de ejecución.","atype":"oficial","sources":[{"deck":"memoria1_2026.pdf","slides":[13,14,15]}]},{"id":"2024j_pf","exam":"Julio 2024","code":"2024-07","problema":"P1 (a) ii","topic":"Fallo de página","cat":"Memoria","q":"¿Cuándo ocurre un fallo de página? Enumere las acciones del SO.","answer":"Cuando se accede a una página no residente. Acciones: (1) frame libre o víctima al backing store; (2) cargar página del disco; (3) actualizar tabla de páginas y PCB; (4) retornar a la instrucción interrumpida.","atype":"oficial","sources":[{"deck":"memoria3_2026.pdf","slides":[17,18]}]},{"id":"2024j_threads","exam":"Julio 2024","code":"2024-07","problema":"P1 (b)","topic":"Modelos de hilos","cat":"Procesos e hilos","q":"i. Tres modelos de hilos. ii. Relación con planificación. iii. ¿Cuál beneficia más en multiprocesador?","answer":"i. Mx1, 1x1, MxN.\nii. El planificador del kernel planifica kernel threads (en 1x1 cada user thread es uno; en Mx1 solo uno por proceso).\niii. Para paralelismo real: 1x1 (o MxN con varios kernel threads) permite correr hilos en distintas CPUs y no bloquear todo el proceso si un hilo hace E/S.","atype":"oficial","sources":[{"deck":"clase5.pdf","slides":[35,36,37,38]}]},{"id":"2024d_pag","exam":"Diciembre 2024","code":"2024-12","problema":"P1 (a)","topic":"Paginación","cat":"Memoria","q":"I. ¿Cómo se implementa el direccionamiento con paginación?\nII. ¿Qué fragmentación evita la paginación en un sistema con swap?","answer":"I. Dirección lógica = nº página + offset. El hardware (MMU) indexa la tabla de páginas, obtiene el frame y concatena el offset → física. Cooperación SO+hardware.\n\nII. Evita fragmentación externa (unidades de tamaño fijo; no hace falta compactar). También simplifica el swap (todos los fragmentos son del tamaño de un frame).","atype":"oficial","sources":[{"deck":"memoria2_2026.pdf","slides":[19,20,24]}]},{"id":"2024d_sstf","exam":"Diciembre 2024","code":"2024-12","problema":"P1 (b)","topic":"SSTF","cat":"Almacenamiento y RAID","q":"Describa SSTF e indique su principal desventaja. ¿Favorece cilindros externos/internos?","answer":"SSTF elige el pedido de menor seek time desde la posición actual. Mejora FCFS en seek promedio.\nDesventaja: starvation posible de pedidos lejanos.\nNo favorece extremos: favorece la zona media (la cabeza puede moverse en ambos sentidos y encuentra más peticiones cercanas).","atype":"oficial","sources":[{"deck":"clase21.pdf","slides":[19]}]},{"id":"2024d_suid","exam":"Diciembre 2024","code":"2024-12","problema":"P1 (c)","topic":"SetUID / passwd","cat":"Seguridad","q":"¿Para qué es /usr/bin/passwd? ¿Qué significa la s en permisos? Riesgos y dos mitigaciones.","answer":"passwd cambia contraseñas de usuarios. La s (SetUID) hace que el programa corra con el UID del dueño (root), necesario para escribir en bases de contraseñas protegidas.\n\nRiesgo: bugs → escalada a root.\nMitigaciones: limitar SetUID a lo imprescindible; auditar binarios SetUID; cuidar inputs; herramientas de integridad (Tripwire/AIDE), etc.","atype":"oficial","sources":[{"deck":"Seguridad-sistoper-UNIX.pdf","slides":[24,25,26]}]},{"id":"2025f_fs","exam":"Febrero 2025","code":"2025-02","problema":"P1 (a)","topic":"Diseño de FS","cat":"Sistemas de archivos","q":"I. Problemas del diseño de un sistema de archivos.\nII. Estructuras en dispositivos físicos para implementarlos.","answer":"I. (1) Visión del usuario: atributos, operaciones y estructura de directorios. (2) Algoritmos/estructuras para mapear el FS lógico a dispositivos físicos.\n\nII. Boot control block; volume control block (superblock); estructura de directorios; FCB/inodo por archivo.","atype":"oficial","sources":[{"deck":"clase19.pdf","slides":[21,26]}]},{"id":"2025j_uth","exam":"Julio 2025","code":"2025-07","problema":"P1 (a)","topic":"Hilos usuario vs kernel","cat":"Procesos e hilos","q":"I. Diferencia entre hilos de usuario e hilos de kernel.\nII. Impacto en eficiencia, manejo del SO y E/S bloqueante.","answer":"Usuario: gestionados por biblioteca; el kernel no los ve individualmente; create/switch baratos; un bloqueo de E/S puede parar todo el proceso.\nKernel: el SO los planifica; más overhead; otros hilos del proceso pueden seguir; se pueden usar varias CPUs.\n\nEficiencia: usuario gana en create/switch; kernel gana en paralelismo y E/S. Manejo: kernel es más “consciente”. Bloqueos: peor en usuario puro (Mx1).","atype":"oficial","sources":[{"deck":"clase5.pdf","slides":[26,35,36]}]},{"id":"2025d_class","exam":"Diciembre 2025","code":"2025-12","problema":"P1 (a)","topic":"CPU-bound vs I/O-bound","cat":"Planificación","q":"Clasifique: compilador largo intensivo en CPU; generador de informes con consultas y transformaciones; juego interactivo. ¿Qué esquema MLFQ propondría?","answer":"Compilador: CPU-bound. Juego: I/O-bound / interactivo. Informe: mixto (E/S de BD + CPU de transformaciones).\n\nMLFQ: cola alta con RR de quantum corto para interactivos (juego) y procesos que se bloquean; colas más bajas con quantums mayores para CPU-bound (compilador). Retroalimentación: agotar quantum → bajar; bloquearse → subir/mantener alta prioridad.","atype":"oficial","sources":[{"deck":"clase6.pdf","slides":[7,40,41]}]},{"id":"2026f_bank","exam":"Febrero 2026","code":"2026-02","problema":"P1 (a) I","topic":"Algoritmo del banquero","cat":"Deadlock","q":"Explique el algoritmo del banquero y qué es un estado seguro.","answer":"Banquero: estrategia de evitación. Solo concede un pedido si, tras simular la asignación, el sistema sigue en estado seguro.\n\nEstado seguro: existe una secuencia de procesos tal que, con los recursos disponibles actuales, cada uno puede obtener lo que le falta, terminar y liberar, permitiendo que el siguiente haga lo mismo (secuencia segura). No garantiza que no haya deadlock en el futuro si los procesos se comportan distinto, pero evita entrar a estados inseguros por asignación.","atype":"oficial","sources":[{"deck":"deadlock.pdf","slides":[23,32,34,35]}]},{"id":"2020a_sync","exam":"Agosto 2020","code":"2020-08","problema":"P1 E/S","topic":"E/S sincrónica y asincrónica","cat":"Entrada/Salida","q":"Explique brevemente E/S sincrónica y E/S asincrónica.","answer":"Sincrónica: la operación se completa (o el proceso espera su completitud) de forma acoplada al flujo del llamador — típico de llamadas bloqueantes.\nAsincrónica: el control regresa de inmediato; la E/S corre en paralelo y el sistema notifica al terminar (señal, callback, evento).","atype":"slides","sources":[{"deck":"clase22.pdf","slides":[28]}]},{"id":"2018d_second","exam":"Diciembre 2018","code":"2018-12","problema":"P1 second chance","topic":"Second chance","cat":"Memoria","q":"En un sistema con memoria virtual, describa el algoritmo de reemplazo de segunda chance.","answer":"Mejora de FIFO con bit de referencia. Se mira la víctima más antigua: si el bit de referencia es 1, se le da otra oportunidad (bit←0 y se mueve al final de la cola); si es 0, se reemplaza. Reduce fallos respecto de FIFO puro pero puede costar más; sufre anomalía de Belady como FIFO.","atype":"slides","sources":[{"deck":"memoria3_2026.pdf","slides":[31,35]}]}];
+const LS = "teoricoSOex.v1";
+const XP_PER = 10;
+
+let state = { order:"sec", cat:"__all__", exam:"__all__", hideKnown:false, known:[], listOpen:false, xp:0, tokens:0, hiScore:0, knownCountForTokens:0 };
+try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) state=Object.assign(state,s); }catch(e){}
+let known = new Set(state.known||[]);
+let active=[], idx=0, revealed=false, shuffleMap={};
+let sessionCombo=0;
+
+const $=s=>document.querySelector(s);
+const esc=t=>(t||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const examOrderKey=c=>{const m=(c||"").match(/(\d{4})-(\d{2})/);return m?(m[1]+m[2]):"9999";};
+function save(){ state.known=[...known]; try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){} }
+function levelOf(xp){ return Math.floor(xp/50)+1; }
+function toast(msg){ const el=$("#toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"),2400); }
+function cheerMsg(){
+  const n=known.size, tot=DATA.length, pct=tot?Math.round(100*n/tot):0;
+  if(!n) return "Marcá «la sabía» cuando puedas justificarla en voz alta. Cada 2 sumás una ficha de Kernel Muncher.";
+  if(n===tot) return "🏆 Dominio total de teóricas de examen. Sos el scheduler del universo.";
+  if(pct>=70) return "Casi full. Mirá el mapa de dominio y cerrá los temas flojos.";
+  if(sessionCombo>=3) return "Combo ×"+sessionCombo+" en esta sesión. Seguí el ritmo.";
+  if(state.tokens>=2) return "Tenés fichas para el muncher — recompensa merecida entre cards.";
+  return "XP y fichas se guardan en este navegador (localStorage). Sin rachas de calendario.";
+}
+
+function buildActive(){
+  let list=DATA.filter(q=>(state.cat==="__all__"||q.cat===state.cat)&&(state.exam==="__all__"||q.exam===state.exam)&&(!state.hideKnown||!known.has(q.id)));
+  if(state.order==="rand"){ list.forEach(q=>{if(!(q.id in shuffleMap))shuffleMap[q.id]=Math.random();}); list.sort((a,b)=>shuffleMap[a.id]-shuffleMap[b.id]); }
+  else list.sort((a,b)=>examOrderKey(a.code).localeCompare(examOrderKey(b.code))||a.problema.localeCompare(b.problema,'es')||a.id.localeCompare(b.id));
+  active=list; if(idx>=active.length) idx=Math.max(0,active.length-1);
+}
+function fmtAnswer(t){ return (t||"").split(/\n\n+/).map(p=>"<p>"+esc(p).replace(/\n/g,"<br>")+"</p>").join(""); }
+function srcLine(q){
+  if(!q.sources||!q.sources.length) return "";
+  const parts=q.sources.map(s=>`<b>${esc(s.deck)}</b> · diapositiva${s.slides.length>1?'s':''} ${s.slides.join(', ')}`);
+  return `<div class="src">📎 Fuente: ${parts.join(' · ')}</div>`;
+}
+const ATLABEL={oficial:"✔ Solución oficial del examen",slides:"📘 Respuesta desde las diapositivas",general:"⚠ Respuesta general (verificar)"};
+
+function renderCard(){
+  const card=$("#card");
+  if(!active.length){
+    card.innerHTML=`<div class="empty"><b>¡Nada por acá!</b><br><br>${known.size>=DATA.length?'Marcaste todas.':'Ninguna coincide con los filtros.'}<br><br><button class="btn primary" onclick="clearFilters()">Ver todas</button></div>`;
+    updateChrome(); return;
+  }
+  const q=active[idx], isK=known.has(q.id);
+  card.innerHTML=`
+    <div class="meta">
+      <span class="pill exam">📄 ${esc(q.exam)}</span>
+      <span class="pill prob">${esc(q.problema)}</span>
+      <span class="pill topic">${esc(q.topic)}</span>
+      ${isK?'<span class="pill known">✓ ya la sé</span>':''}
+    </div>
+    <div class="q">${esc(q.q)}</div>
+    <div class="qhint">Examen real: pensá la justificación completa antes de revelar.</div>
+    <div class="reveal-wrap" id="rw"></div>`;
+  const rw=$("#rw");
+  if(!revealed) rw.innerHTML=`<button class="btn primary big-reveal" onclick="reveal()">👁 Mostrar respuesta</button>`;
+  else rw.innerHTML=`<div class="answer"><span class="atype ${q.atype}">${ATLABEL[q.atype]}</span><div class="txt">${fmtAnswer(q.answer)}</div>${srcLine(q)}${q.note?`<div class="note">⚠ ${esc(q.note)}</div>`:""}</div>`;
+  const act=document.createElement("div"); act.className="actions";
+  act.innerHTML=`
+    <button class="btn ${isK?'ghost':'primary'}" onclick="markKnown()">${isK?'✓ Sabida':'✓ La sabía'}</button>
+    <button class="btn ghost" onclick="markReview()">↻ A repasar</button>
+    <div class="nav">
+      <button class="btn" onclick="go(-1)">← Anterior</button>
+      <div class="pos">${idx+1} / ${active.length}</div>
+      <button class="btn" onclick="go(1)">Siguiente →</button>
+    </div>`;
+  card.appendChild(act); updateChrome();
+}
+function renderDomain(){
+  const box=$("#dgrid"); if(!box) return;
+  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>a.localeCompare(b,'es'));
+  box.innerHTML=cats.map(c=>{
+    const all=DATA.filter(q=>q.cat===c); const kn=all.filter(q=>known.has(q.id)).length;
+    const pct=all.length?Math.round(100*kn/all.length):0;
+    return `<div class="ditem"><div class="dn">${esc(c)}</div><div class="db"><i style="width:${pct}%"></i></div><div class="ds">${kn}/${all.length}</div></div>`;
+  }).join("");
+}
+function updateChrome(){
+  $("#knownN").textContent=known.size; $("#totalN").textContent=DATA.length;
+  $("#pbar").style.width=(100*known.size/Math.max(1,DATA.length)).toFixed(0)+"%";
+  const xp=state.xp||0;
+  $("#levelN").textContent="Nv. "+levelOf(xp);
+  $("#xpN").textContent=xp+" XP";
+  $("#comboN").textContent=String(sessionCombo);
+  $("#tokenN").textContent=String(state.tokens||0);
+  $("#hiN").textContent=String(state.hiScore||0);
+  $("#cheer").textContent=cheerMsg();
+  $("#playBtn").disabled=false;
+  renderDomain(); renderList();
+}
+function renderList(){
+  const box=$("#list"); if(!box) return;
+  const term=($("#search")?.value||"").toLowerCase().trim();
+  let items=active.filter(q=>!term||q.q.toLowerCase().includes(term)||q.exam.toLowerCase().includes(term)||q.topic.toLowerCase().includes(term)||(q.cat||"").toLowerCase().includes(term));
+  $("#listCount").textContent="("+items.length+")";
+  box.innerHTML="";
+  items.forEach(q=>{
+    const cur=active[idx]&&active[idx].id===q.id, isK=known.has(q.id);
+    const el=document.createElement("div");
+    el.className="li"+(cur?" cur":"")+(isK?" done":"");
+    el.innerHTML=`<span class="dot ${q.atype}"></span><span class="code">${esc(q.code)}</span><span class="qt">${esc(q.q.length>90?q.q.slice(0,90)+'…':q.q)}</span>${isK?'<span class="chk2">✓</span>':''}`;
+    el.onclick=()=>{idx=active.indexOf(q);revealed=false;renderCard();};
+    box.appendChild(el);
+  });
+}
+window.reveal=()=>{revealed=true;renderCard();};
+window.go=d=>{if(!active.length)return;idx=(idx+d+active.length)%active.length;revealed=false;renderCard();};
+window.markKnown=()=>{
+  const q=active[idx]; if(!q)return;
+  const was=known.has(q.id);
+  known.add(q.id);
+  if(!was){
+    state.xp=(state.xp||0)+XP_PER;
+    sessionCombo++;
+    state.knownCountForTokens=(state.knownCountForTokens||0)+1;
+    if(state.knownCountForTokens%2===0){ state.tokens=(state.tokens||0)+1; toast("✔ +"+XP_PER+" XP · 👾 +1 ficha Kernel Muncher"); }
+    else toast("✔ +"+XP_PER+" XP · combo ×"+sessionCombo);
+    if(known.size%5===0) toast("⬆️ Nivel "+levelOf(state.xp));
+  }
+  save();
+  if(state.hideKnown){buildActive();revealed=false;}
+  renderCard();
+};
+window.markReview=()=>{const q=active[idx];if(!q)return;known.delete(q.id);sessionCombo=0;save();renderCard();};
+window.clearFilters=()=>{state.cat="__all__";state.exam="__all__";state.hideKnown=false;
+  $("#fCat").value="__all__";$("#fExam").value="__all__";$("#hideKnown").checked=false;idx=0;revealed=false;buildActive();renderCard();save();};
+
+function initControls(){
+  const cats=[...new Set(DATA.map(q=>q.cat))].sort((a,b)=>a.localeCompare(b,'es'));
+  $("#fCat").innerHTML=`<option value="__all__">Todos los temas (${DATA.length})</option>`+cats.map(c=>`<option value="${esc(c)}">${esc(c)} (${DATA.filter(q=>q.cat===c).length})</option>`).join("");
+  const exams=[...new Set(DATA.map(q=>q.exam))].sort((a,b)=>examOrderKey(DATA.find(q=>q.exam===b).code).localeCompare(examOrderKey(DATA.find(q=>q.exam===a).code)));
+  $("#fExam").innerHTML=`<option value="__all__">Todos los exámenes</option>`+exams.map(e=>`<option value="${esc(e)}">${esc(e)} (${DATA.filter(q=>q.exam===e).length})</option>`).join("");
+  $("#fCat").value=state.cat; $("#fExam").value=state.exam; $("#hideKnown").checked=!!state.hideKnown;
+  document.querySelectorAll("#orderSeg button").forEach(b=>{
+    b.classList.toggle("on",b.dataset.o===state.order);
+    b.onclick=()=>{state.order=b.dataset.o;if(b.dataset.o==="rand")shuffleMap={};
+      document.querySelectorAll("#orderSeg button").forEach(x=>x.classList.toggle("on",x===b));
+      idx=0;revealed=false;buildActive();renderCard();save();};
+  });
+  $("#fCat").onchange=e=>{state.cat=e.target.value;idx=0;revealed=false;buildActive();renderCard();save();};
+  $("#fExam").onchange=e=>{state.exam=e.target.value;idx=0;revealed=false;buildActive();renderCard();save();};
+  $("#hideKnown").onchange=e=>{state.hideKnown=e.target.checked;idx=0;revealed=false;buildActive();renderCard();save();};
+  $("#toggleList").onclick=()=>{state.listOpen=!state.listOpen;applyList();save();};
+  $("#search")&&($("#search").oninput=renderList);
+  $("#resetBtn").onclick=()=>{if(confirm("¿Borrar progreso (sabidas, XP, fichas, hi-score)?")){known=new Set();state.xp=0;state.tokens=0;state.hiScore=0;state.knownCountForTokens=0;sessionCombo=0;save();buildActive();renderCard();}};
+  $("#playBtn").onclick=openGame;
+  applyList();
+}
+function applyList(){
+  $("#listpanel").style.display=state.listOpen?"flex":"none";
+  $("#layout").classList.toggle("withlist",state.listOpen);
+  $("#toggleList").classList.toggle("primary",state.listOpen);
+  if(state.listOpen)renderList();
+}
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;
+  if($("#gameModal").classList.contains("open")) return; // game handles keys
+  if(e.key==="ArrowLeft")go(-1);
+  else if(e.key==="ArrowRight")go(1);
+  else if(e.key===" "||e.key==="Enter"){e.preventDefault();if(!revealed)reveal();}
+  else if(e.key.toLowerCase()==="s")markKnown();
+  else if(e.key.toLowerCase()==="r")markReview();
+  else if(e.key.toLowerCase()==="l"){state.listOpen=!state.listOpen;applyList();save();}
+  else if(e.key.toLowerCase()==="g")openGame();
+});
+
+/* ========== Kernel Muncher (mini pacman) ========== */
+const MAZE = [
+"###############",
+"#.............#",
+"#.###.#.###.#.#",
+"#o#.....#...#o#",
+"#.###.#.#.###.#",
+"#.....#.#.....#",
+"###.#.#####.#.#",
+"#...#...#.....#",
+"#.#####.#.###.#",
+"#o....#...#..o#",
+"###############"
+];
+const ROWS=MAZE.length, COLS=MAZE[0].length, TS=24;
+let game={running:false, score:0, lives:3, px:1, py:1, gx:13, gy:9, gdir:0, timer:null, pellets:0};
+const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
+
+function openGame(){
+  $("#gameModal").classList.add("open");
+  $("#gHi").textContent=state.hiScore||0;
+  drawGame(true);
+}
+function closeGame(){
+  stopGameLoop();
+  $("#gameModal").classList.remove("open");
+  updateChrome();
+}
+function stopGameLoop(){ if(game.timer){clearInterval(game.timer);game.timer=null;} game.running=false; }
+
+function countPellets(){
+  let n=0; for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++) if(MAZE[y][x]==='.'||MAZE[y][x]==='o') n++;
+  return n;
+}
+function resetPositions(){ game.px=1; game.py=1; game.gx=13; game.gy=9; game.gdir=0; }
+function startGame(){
+  if((state.tokens||0)<1){ toast("Necesitás 1 ficha (marcá 2 «la sabía» nuevas)"); return; }
+  state.tokens--; save(); updateChrome();
+  game.score=0; game.lives=3; game.pellets=countPellets();
+  // rebuild maze state as mutable grid
+  game.grid=MAZE.map(r=>r.split(""));
+  resetPositions();
+  game.running=true;
+  $("#gScore").textContent=0; $("#gLives").textContent=3;
+  stopGameLoop();
+  game.timer=setInterval(tick, 140);
+  drawGame(false);
+}
+function canWalk(x,y){ return y>=0&&y<ROWS&&x>=0&&x<COLS&&game.grid[y][x]!=='#'; }
+function tick(){
+  if(!game.running) return;
+  // ghost AI: prefer moving toward player with some randomness
+  const opts=[];
+  for(let i=0;i<4;i++){ const nx=game.gx+dirs[i][0], ny=game.gy+dirs[i][1]; if(canWalk(nx,ny)) opts.push(i); }
+  if(opts.length){
+    let best=opts[0], bestD=1e9;
+    for(const i of opts){
+      const nx=game.gx+dirs[i][0], ny=game.gy+dirs[i][1];
+      const d=Math.abs(nx-game.px)+Math.abs(ny-game.py);
+      if(Math.random()<0.25){ best=i; break; }
+      if(d<bestD){bestD=d;best=i;}
+    }
+    game.gx+=dirs[best][0]; game.gy+=dirs[best][1];
+  }
+  if(game.gx===game.px && game.gy===game.py) hitGhost();
+  drawGame(false);
+  if(game.pellets<=0) winGame();
+}
+function hitGhost(){
+  game.lives--; $("#gLives").textContent=game.lives;
+  if(game.lives<=0){ stopGameLoop(); toast("Thrashing te alcanzó · score "+game.score); if(game.score>(state.hiScore||0)){state.hiScore=game.score;save();} drawGame(false); return; }
+  resetPositions(); toast("¡Cuidado! -1 vida");
+}
+function winGame(){
+  stopGameLoop();
+  game.score+=100;
+  $("#gScore").textContent=game.score;
+  if(game.score>(state.hiScore||0)){ state.hiScore=game.score; save(); }
+  toast("🎉 Nivel limpio · score "+game.score+" · hi "+state.hiScore);
+  // reward token back sometimes
+  if(game.score>=40){ state.tokens=(state.tokens||0)+1; save(); toast("Bonus: +1 ficha por clean board"); }
+  updateChrome();
+}
+function tryMove(dx,dy){
+  if(!game.running||!game.grid) return;
+  const nx=game.px+dx, ny=game.py+dy;
+  if(!canWalk(nx,ny)) return;
+  game.px=nx; game.py=ny;
+  const cell=game.grid[ny][nx];
+  if(cell==='.'||cell==='o'){
+    game.grid[ny][nx]=' ';
+    game.score += cell==='o'?5:1;
+    game.pellets--;
+    $("#gScore").textContent=game.score;
+    if(game.score>(state.hiScore||0)){ state.hiScore=game.score; save(); $("#gHi").textContent=state.hiScore; $("#hiN").textContent=state.hiScore; }
+  }
+  if(game.gx===game.px && game.gy===game.py) hitGhost();
+  if(game.pellets<=0) winGame();
+  drawGame(false);
+}
+function drawGame(preview){
+  const cv=$("#gcanvas"), ctx=cv.getContext("2d");
+  const grid = game.grid || MAZE.map(r=>r.split(""));
+  ctx.fillStyle="#05030a"; ctx.fillRect(0,0,cv.width,cv.height);
+  for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++){
+    const c=grid[y][x];
+    if(c==='#'){ ctx.fillStyle="#5b21b6"; ctx.fillRect(x*TS,y*TS,TS,TS); ctx.fillStyle="#7c3aed"; ctx.fillRect(x*TS+2,y*TS+2,TS-4,TS-4); }
+    else if(c==='.'){ ctx.fillStyle="#f0abfc"; ctx.beginPath(); ctx.arc(x*TS+TS/2,y*TS+TS/2,3,0,Math.PI*2); ctx.fill(); }
+    else if(c==='o'){ ctx.fillStyle="#fbbf24"; ctx.beginPath(); ctx.arc(x*TS+TS/2,y*TS+TS/2,6,0,Math.PI*2); ctx.fill(); }
+  }
+  // player
+  const px=preview?1:game.px, py=preview?1:game.py;
+  ctx.fillStyle="#fde047"; ctx.beginPath(); ctx.arc(px*TS+TS/2,py*TS+TS/2,9,0.2*Math.PI,1.8*Math.PI); ctx.lineTo(px*TS+TS/2,py*TS+TS/2); ctx.fill();
+  // ghost
+  const gx=preview?13:game.gx, gy=preview?9:game.gy;
+  ctx.fillStyle="#f87171";
+  ctx.beginPath(); ctx.arc(gx*TS+TS/2,gy*TS+TS/2-2,9,Math.PI,0); ctx.lineTo(gx*TS+TS/2+9,gy*TS+TS/2+8);
+  ctx.lineTo(gx*TS+TS/2+4,gy*TS+TS/2+4); ctx.lineTo(gx*TS+TS/2,gy*TS+TS/2+8); ctx.lineTo(gx*TS+TS/2-4,gy*TS+TS/2+4); ctx.lineTo(gx*TS+TS/2-9,gy*TS+TS/2+8); ctx.closePath(); ctx.fill();
+  ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(gx*TS+TS/2-3,gy*TS+TS/2-2,2.5,0,Math.PI*2); ctx.arc(gx*TS+TS/2+3,gy*TS+TS/2-2,2.5,0,Math.PI*2); ctx.fill();
+}
+document.addEventListener("keydown",e=>{
+  if(!$("#gameModal").classList.contains("open")) return;
+  const k=e.key.toLowerCase();
+  if(["arrowup","arrowdown","arrowleft","arrowright","w","a","s","d"].includes(k)||k===" ") e.preventDefault();
+  if(k==="arrowup"||k==="w") tryMove(0,-1);
+  if(k==="arrowdown"||k==="s") tryMove(0,1);
+  if(k==="arrowleft"||k==="a") tryMove(-1,0);
+  if(k==="arrowright"||k==="d") tryMove(1,0);
+  if(k==="escape") closeGame();
+});
+$("#gStart").onclick=startGame;
+$("#gClose").onclick=closeGame;
+$("#gameModal").addEventListener("click",e=>{ if(e.target===$("#gameModal")) closeGame(); });
+
+initControls(); buildActive(); renderCard();
+</script>
+</body>
+</html>
