@@ -101,7 +101,7 @@ select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);backgroun
 .empty b{color:var(--ink);font-size:17px}
 .kbd{font-size:11px;color:var(--muted);margin-top:14px;text-align:center}
 .kbd kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;font-family:inherit;font-size:11px}
-.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(16px);background:#2e1065;color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:90;max-width:92vw;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(16px);background:#2e1065;color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:92vw;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.35)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 /* Game modal */
 .modal{position:fixed;inset:0;background:rgba(15,10,26,.72);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
@@ -109,9 +109,14 @@ select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);backgroun
 .gbox{background:var(--gamebg);color:#e9d5ff;border-radius:18px;padding:16px;width:min(440px,100%);box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid #4c1d95}
 .gbox h2{margin:0 0 6px;font-size:18px;color:#f5d0fe}
 .gbox .gsub{font-size:12.5px;color:#c4b5fd;margin-bottom:10px;line-height:1.4}
-#gcanvas{display:block;width:100%;height:auto;background:#05030a;border-radius:12px;image-rendering:pixelated;border:2px solid #6d28d9}
+#gcanvas{display:block;width:100%;max-width:360px;margin:0 auto;height:auto;background:#05030a;border-radius:12px;image-rendering:pixelated;border:2px solid #6d28d9;touch-action:none}
 .gstats{display:flex;justify-content:space-between;gap:8px;margin:10px 0;font-size:13px;font-weight:700;color:#f0abfc}
-.gactions{display:flex;gap:8px;flex-wrap:wrap}
+.gactions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.gmsg{font-size:12.5px;color:#c4b5fd;min-height:18px;margin:4px 0 8px}
+.dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:6px;justify-content:center;margin:8px auto 4px}
+.dpad button{border:0;border-radius:12px;background:#4c1d95;color:#f5d0fe;font-size:18px;font-weight:800;cursor:pointer;user-select:none}
+.dpad button:active{background:#7c3aed}
+.dpad .sp{visibility:hidden}
 .home{position:fixed;bottom:18px;left:18px;z-index:60;display:inline-flex;align-items:center;gap:7px;background:#111827;color:#fff;text-decoration:none;font:600 13px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.28)}
 </style>
 </head>
@@ -156,7 +161,7 @@ select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);backgroun
     </div>
     <div class="spacer"></div>
     <div class="grp"><label>&nbsp;</label>
-      <button class="btn game" id="playBtn" title="Ganás 1 ficha cada 2 «la sabía» nuevas">👾 Kernel Muncher</button>
+      <button class="btn game" id="playBtn" title="Jugá gratis · con ficha sumás vida extra">👾 Kernel Muncher</button>
     </div>
     <div class="grp"><label>&nbsp;</label><button class="btn ghost" id="toggleList">☰ Lista</button></div>
     <div class="grp"><label>&nbsp;</label><button class="btn ghost" id="resetBtn">↺ Reiniciar</button></div>
@@ -182,12 +187,17 @@ select,.btn{font:inherit;font-size:13.5px;border:1px solid var(--line);backgroun
 <div class="modal" id="gameModal" aria-hidden="true">
   <div class="gbox">
     <h2>👾 Kernel Muncher</h2>
-    <div class="gsub">Comé todas las <b style="color:#f0abfc">páginas</b> (puntos) sin que te atrape el <b style="color:#f87171">thrashing</b>. Flechas o WASD. Cada 2 preguntas que marcás como sabidas = 1 ficha. El hi-score se guarda en este navegador.</div>
-    <canvas id="gcanvas" width="360" height="280"></canvas>
+    <div class="gsub">Comé las <b style="color:#f0abfc">páginas</b> sin que te atrape el <b style="color:#f87171">thrashing</b>. Flechas / WASD o el pad de abajo. Jugá gratis; con ficha (cada 2 «la sabía») empezás con +1 vida. Hi-score en este navegador.</div>
+    <canvas id="gcanvas" width="360" height="264" tabindex="0"></canvas>
+    <div class="gmsg" id="gMsg">Tocá ▶ Jugar para empezar</div>
     <div class="gstats"><span>Score: <span id="gScore">0</span></span><span>Vidas: <span id="gLives">3</span></span><span>Hi: <span id="gHi">0</span></span></div>
+    <div class="dpad" id="dpad" aria-label="controles">
+      <span class="sp"></span><button type="button" data-dx="0" data-dy="-1">↑</button><span class="sp"></span>
+      <button type="button" data-dx="-1" data-dy="0">←</button><button type="button" data-dx="0" data-dy="1">↓</button><button type="button" data-dx="1" data-dy="0">→</button>
+    </div>
     <div class="gactions">
-      <button class="btn game" id="gStart">▶ Jugar (1 ficha)</button>
-      <button class="btn ghost" id="gClose" style="color:#1e1033">Cerrar</button>
+      <button class="btn game" id="gStart" type="button">▶ Jugar</button>
+      <button class="btn ghost" id="gClose" type="button" style="color:#1e1033">Cerrar</button>
     </div>
   </div>
 </div>
@@ -211,12 +221,12 @@ function levelOf(xp){ return Math.floor(xp/50)+1; }
 function toast(msg){ const el=$("#toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"),2400); }
 function cheerMsg(){
   const n=known.size, tot=DATA.length, pct=tot?Math.round(100*n/tot):0;
-  if(!n) return "Marcá «la sabía» cuando puedas justificarla en voz alta. Cada 2 sumás una ficha de Kernel Muncher.";
+  if(!n) return "Marcá «la sabía» cuando puedas justificarla. El muncher se juega gratis (G); las fichas dan +1 vida.";
   if(n===tot) return "🏆 Dominio total de teóricas de examen. Sos el scheduler del universo.";
   if(pct>=70) return "Casi full. Mirá el mapa de dominio y cerrá los temas flojos.";
   if(sessionCombo>=3) return "Combo ×"+sessionCombo+" en esta sesión. Seguí el ritmo.";
-  if(state.tokens>=2) return "Tenés fichas para el muncher — recompensa merecida entre cards.";
-  return "XP y fichas se guardan en este navegador (localStorage). Sin rachas de calendario.";
+  if(state.tokens>=1) return "Tenés fichas: en el muncher suman una vida extra al empezar.";
+  return "XP y fichas se guardan en este navegador (localStorage). El juego no depende de rachas.";
 }
 
 function buildActive(){
@@ -377,124 +387,250 @@ const MAZE = [
 "###############"
 ];
 const ROWS=MAZE.length, COLS=MAZE[0].length, TS=24;
-let game={running:false, score:0, lives:3, px:1, py:1, gx:13, gy:9, gdir:0, timer:null, pellets:0};
+let game={running:false, score:0, lives:3, px:1, py:1, gx:13, gy:9, timer:null, pellets:0, grid:null, pdx:0, pdy:0};
 const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 
+function gMsg(t){ const el=$("#gMsg"); if(el) el.textContent=t; }
+
 function openGame(){
-  $("#gameModal").classList.add("open");
+  const m=$("#gameModal");
+  m.classList.add("open");
+  m.setAttribute("aria-hidden","false");
   $("#gHi").textContent=state.hiScore||0;
-  drawGame(true);
+  gMsg("Tocá ▶ Jugar — flechas/WASD o el pad");
+  // preview maze
+  game.grid=MAZE.map(r=>r.split(""));
+  resetPositions();
+  game.running=false;
+  drawGame();
+  setTimeout(()=>{ try{ $("#gcanvas").focus(); }catch(e){} }, 50);
 }
 function closeGame(){
   stopGameLoop();
-  $("#gameModal").classList.remove("open");
+  const m=$("#gameModal");
+  m.classList.remove("open");
+  m.setAttribute("aria-hidden","true");
   updateChrome();
 }
-function stopGameLoop(){ if(game.timer){clearInterval(game.timer);game.timer=null;} game.running=false; }
+function stopGameLoop(){
+  if(game.timer){ clearInterval(game.timer); game.timer=null; }
+  game.running=false;
+}
 
-function countPellets(){
-  let n=0; for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++) if(MAZE[y][x]==='.'||MAZE[y][x]==='o') n++;
+function countPellets(grid){
+  let n=0;
+  for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++) if(grid[y][x]==='.'||grid[y][x]==='o') n++;
   return n;
 }
-function resetPositions(){ game.px=1; game.py=1; game.gx=13; game.gy=9; game.gdir=0; }
+function resetPositions(){ game.px=1; game.py=1; game.gx=13; game.gy=9; game.pdx=0; game.pdy=0; }
+
 function startGame(){
-  if((state.tokens||0)<1){ toast("Necesitás 1 ficha (marcá 2 «la sabía» nuevas)"); return; }
-  state.tokens--; save(); updateChrome();
-  game.score=0; game.lives=3; game.pellets=countPellets();
-  // rebuild maze state as mutable grid
-  game.grid=MAZE.map(r=>r.split(""));
-  resetPositions();
-  game.running=true;
-  $("#gScore").textContent=0; $("#gLives").textContent=3;
+  // IMPORTANT: stop any previous loop first, THEN set running=true
   stopGameLoop();
-  game.timer=setInterval(tick, 140);
-  drawGame(false);
+  // free play; optional token = +1 life
+  let lives=3;
+  if((state.tokens||0)>0){
+    state.tokens--;
+    lives=4;
+    save();
+    updateChrome();
+    gMsg("Partida con ficha · 4 vidas. ¡A moverse!");
+  } else {
+    gMsg("¡En juego! Flechas / WASD / pad");
+  }
+  game.score=0;
+  game.lives=lives;
+  game.grid=MAZE.map(r=>r.split(""));
+  game.pellets=countPellets(game.grid);
+  resetPositions();
+  $("#gScore").textContent="0";
+  $("#gLives").textContent=String(game.lives);
+  $("#gHi").textContent=String(state.hiScore||0);
+  game.running=true;
+  game.timer=setInterval(tick, 120);
+  drawGame();
+  try{ $("#gcanvas").focus(); }catch(e){}
 }
-function canWalk(x,y){ return y>=0&&y<ROWS&&x>=0&&x<COLS&&game.grid[y][x]!=='#'; }
+
+function canWalk(x,y){
+  if(!game.grid) return false;
+  return y>=0&&y<ROWS&&x>=0&&x<COLS&&game.grid[y][x]!=='#';
+}
+
 function tick(){
-  if(!game.running) return;
-  // ghost AI: prefer moving toward player with some randomness
+  if(!game.running || !game.grid) return;
+  // continuous player motion if a direction is held via pdx/pdy
+  if(game.pdx||game.pdy){
+    const nx=game.px+game.pdx, ny=game.py+game.pdy;
+    if(canWalk(nx,ny)) applyPlayerAt(nx,ny);
+  }
+  // ghost AI
   const opts=[];
-  for(let i=0;i<4;i++){ const nx=game.gx+dirs[i][0], ny=game.gy+dirs[i][1]; if(canWalk(nx,ny)) opts.push(i); }
+  for(let i=0;i<4;i++){
+    const nx=game.gx+dirs[i][0], ny=game.gy+dirs[i][1];
+    if(canWalk(nx,ny)) opts.push(i);
+  }
   if(opts.length){
-    let best=opts[0], bestD=1e9;
-    for(const i of opts){
-      const nx=game.gx+dirs[i][0], ny=game.gy+dirs[i][1];
-      const d=Math.abs(nx-game.px)+Math.abs(ny-game.py);
-      if(Math.random()<0.25){ best=i; break; }
-      if(d<bestD){bestD=d;best=i;}
+    let best=opts[Math.floor(Math.random()*opts.length)], bestD=1e9;
+    if(Math.random()>0.3){
+      for(const i of opts){
+        const nx=game.gx+dirs[i][0], ny=game.gy+dirs[i][1];
+        const d=Math.abs(nx-game.px)+Math.abs(ny-game.py);
+        if(d<bestD){ bestD=d; best=i; }
+      }
     }
-    game.gx+=dirs[best][0]; game.gy+=dirs[best][1];
+    game.gx+=dirs[best][0];
+    game.gy+=dirs[best][1];
   }
   if(game.gx===game.px && game.gy===game.py) hitGhost();
-  drawGame(false);
+  drawGame();
   if(game.pellets<=0) winGame();
 }
+
 function hitGhost(){
-  game.lives--; $("#gLives").textContent=game.lives;
-  if(game.lives<=0){ stopGameLoop(); toast("Thrashing te alcanzó · score "+game.score); if(game.score>(state.hiScore||0)){state.hiScore=game.score;save();} drawGame(false); return; }
-  resetPositions(); toast("¡Cuidado! -1 vida");
+  game.lives--;
+  $("#gLives").textContent=String(game.lives);
+  if(game.lives<=0){
+    stopGameLoop();
+    gMsg("Thrashing te alcanzó · score "+game.score+" · ▶ para reintentar");
+    toast("Thrashing te alcanzó · score "+game.score);
+    if(game.score>(state.hiScore||0)){ state.hiScore=game.score; save(); }
+    $("#gHi").textContent=String(state.hiScore||0);
+    drawGame();
+    updateChrome();
+    return;
+  }
+  resetPositions();
+  gMsg("¡Cuidado! -1 vida · te quedan "+game.lives);
+  toast("¡Cuidado! -1 vida");
 }
+
 function winGame(){
   stopGameLoop();
   game.score+=100;
-  $("#gScore").textContent=game.score;
+  $("#gScore").textContent=String(game.score);
   if(game.score>(state.hiScore||0)){ state.hiScore=game.score; save(); }
-  toast("🎉 Nivel limpio · score "+game.score+" · hi "+state.hiScore);
-  // reward token back sometimes
-  if(game.score>=40){ state.tokens=(state.tokens||0)+1; save(); toast("Bonus: +1 ficha por clean board"); }
+  $("#gHi").textContent=String(state.hiScore||0);
+  gMsg("🎉 Tablero limpio · score "+game.score);
+  toast("🎉 Nivel limpio · score "+game.score);
+  if(game.score>=40){ state.tokens=(state.tokens||0)+1; save(); toast("Bonus: +1 ficha"); }
   updateChrome();
+  drawGame();
 }
-function tryMove(dx,dy){
-  if(!game.running||!game.grid) return;
-  const nx=game.px+dx, ny=game.py+dy;
-  if(!canWalk(nx,ny)) return;
+
+function applyPlayerAt(nx,ny){
   game.px=nx; game.py=ny;
   const cell=game.grid[ny][nx];
   if(cell==='.'||cell==='o'){
     game.grid[ny][nx]=' ';
     game.score += cell==='o'?5:1;
     game.pellets--;
-    $("#gScore").textContent=game.score;
-    if(game.score>(state.hiScore||0)){ state.hiScore=game.score; save(); $("#gHi").textContent=state.hiScore; $("#hiN").textContent=state.hiScore; }
+    $("#gScore").textContent=String(game.score);
+    if(game.score>(state.hiScore||0)){
+      state.hiScore=game.score; save();
+      $("#gHi").textContent=String(state.hiScore);
+      $("#hiN").textContent=String(state.hiScore);
+    }
   }
   if(game.gx===game.px && game.gy===game.py) hitGhost();
   if(game.pellets<=0) winGame();
-  drawGame(false);
 }
-function drawGame(preview){
-  const cv=$("#gcanvas"), ctx=cv.getContext("2d");
+
+function tryMove(dx,dy){
+  if(!game.running||!game.grid) return;
+  game.pdx=dx; game.pdy=dy; // remember last intent for continuous-ish feel
+  const nx=game.px+dx, ny=game.py+dy;
+  if(!canWalk(nx,ny)) return;
+  applyPlayerAt(nx,ny);
+  drawGame();
+}
+
+function drawGame(){
+  const cv=$("#gcanvas"); if(!cv) return;
+  const ctx=cv.getContext("2d");
   const grid = game.grid || MAZE.map(r=>r.split(""));
-  ctx.fillStyle="#05030a"; ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.fillStyle="#05030a";
+  ctx.fillRect(0,0,cv.width,cv.height);
   for(let y=0;y<ROWS;y++) for(let x=0;x<COLS;x++){
     const c=grid[y][x];
-    if(c==='#'){ ctx.fillStyle="#5b21b6"; ctx.fillRect(x*TS,y*TS,TS,TS); ctx.fillStyle="#7c3aed"; ctx.fillRect(x*TS+2,y*TS+2,TS-4,TS-4); }
-    else if(c==='.'){ ctx.fillStyle="#f0abfc"; ctx.beginPath(); ctx.arc(x*TS+TS/2,y*TS+TS/2,3,0,Math.PI*2); ctx.fill(); }
-    else if(c==='o'){ ctx.fillStyle="#fbbf24"; ctx.beginPath(); ctx.arc(x*TS+TS/2,y*TS+TS/2,6,0,Math.PI*2); ctx.fill(); }
+    if(c==='#'){
+      ctx.fillStyle="#5b21b6"; ctx.fillRect(x*TS,y*TS,TS,TS);
+      ctx.fillStyle="#7c3aed"; ctx.fillRect(x*TS+2,y*TS+2,TS-4,TS-4);
+    } else if(c==='.'){
+      ctx.fillStyle="#f0abfc"; ctx.beginPath(); ctx.arc(x*TS+TS/2,y*TS+TS/2,3,0,Math.PI*2); ctx.fill();
+    } else if(c==='o'){
+      ctx.fillStyle="#fbbf24"; ctx.beginPath(); ctx.arc(x*TS+TS/2,y*TS+TS/2,6,0,Math.PI*2); ctx.fill();
+    }
   }
   // player
-  const px=preview?1:game.px, py=preview?1:game.py;
-  ctx.fillStyle="#fde047"; ctx.beginPath(); ctx.arc(px*TS+TS/2,py*TS+TS/2,9,0.2*Math.PI,1.8*Math.PI); ctx.lineTo(px*TS+TS/2,py*TS+TS/2); ctx.fill();
+  ctx.fillStyle="#fde047";
+  ctx.beginPath();
+  ctx.arc(game.px*TS+TS/2, game.py*TS+TS/2, 9, 0.2*Math.PI, 1.8*Math.PI);
+  ctx.lineTo(game.px*TS+TS/2, game.py*TS+TS/2);
+  ctx.fill();
   // ghost
-  const gx=preview?13:game.gx, gy=preview?9:game.gy;
+  const gx=game.gx, gy=game.gy;
   ctx.fillStyle="#f87171";
-  ctx.beginPath(); ctx.arc(gx*TS+TS/2,gy*TS+TS/2-2,9,Math.PI,0); ctx.lineTo(gx*TS+TS/2+9,gy*TS+TS/2+8);
-  ctx.lineTo(gx*TS+TS/2+4,gy*TS+TS/2+4); ctx.lineTo(gx*TS+TS/2,gy*TS+TS/2+8); ctx.lineTo(gx*TS+TS/2-4,gy*TS+TS/2+4); ctx.lineTo(gx*TS+TS/2-9,gy*TS+TS/2+8); ctx.closePath(); ctx.fill();
-  ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(gx*TS+TS/2-3,gy*TS+TS/2-2,2.5,0,Math.PI*2); ctx.arc(gx*TS+TS/2+3,gy*TS+TS/2-2,2.5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath();
+  ctx.arc(gx*TS+TS/2, gy*TS+TS/2-2, 9, Math.PI, 0);
+  ctx.lineTo(gx*TS+TS/2+9, gy*TS+TS/2+8);
+  ctx.lineTo(gx*TS+TS/2+4, gy*TS+TS/2+4);
+  ctx.lineTo(gx*TS+TS/2, gy*TS+TS/2+8);
+  ctx.lineTo(gx*TS+TS/2-4, gy*TS+TS/2+4);
+  ctx.lineTo(gx*TS+TS/2-9, gy*TS+TS/2+8);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle="#fff";
+  ctx.beginPath();
+  ctx.arc(gx*TS+TS/2-3, gy*TS+TS/2-2, 2.5, 0, Math.PI*2);
+  ctx.arc(gx*TS+TS/2+3, gy*TS+TS/2-2, 2.5, 0, Math.PI*2);
+  ctx.fill();
 }
-document.addEventListener("keydown",e=>{
-  if(!$("#gameModal").classList.contains("open")) return;
-  const k=e.key.toLowerCase();
-  if(["arrowup","arrowdown","arrowleft","arrowright","w","a","s","d"].includes(k)||k===" ") e.preventDefault();
-  if(k==="arrowup"||k==="w") tryMove(0,-1);
-  if(k==="arrowdown"||k==="s") tryMove(0,1);
-  if(k==="arrowleft"||k==="a") tryMove(-1,0);
-  if(k==="arrowright"||k==="d") tryMove(1,0);
-  if(k==="escape") closeGame();
+
+function handleGameKey(e){
+  if(!$("#gameModal").classList.contains("open")) return false;
+  const k=(e.key||"").toLowerCase();
+  const map={
+    "arrowup":[0,-1], "w":[0,-1],
+    "arrowdown":[0,1], "s":[0,1],
+    "arrowleft":[-1,0], "a":[-1,0],
+    "arrowright":[1,0], "d":[1,0]
+  };
+  if(k==="escape"){ e.preventDefault(); closeGame(); return true; }
+  if(k===" "||k==="enter"){
+    e.preventDefault();
+    if(!game.running) startGame();
+    return true;
+  }
+  if(map[k]){
+    e.preventDefault();
+    if(!game.running) startGame();
+    tryMove(map[k][0], map[k][1]);
+    return true;
+  }
+  return false;
+}
+
+document.addEventListener("keydown", e=>{
+  if(handleGameKey(e)) return;
 });
-$("#gStart").onclick=startGame;
-$("#gClose").onclick=closeGame;
-$("#gameModal").addEventListener("click",e=>{ if(e.target===$("#gameModal")) closeGame(); });
+
+$("#gStart").addEventListener("click", e=>{ e.preventDefault(); startGame(); });
+$("#gClose").addEventListener("click", e=>{ e.preventDefault(); closeGame(); });
+$("#gameModal").addEventListener("click", e=>{ if(e.target===$("#gameModal")) closeGame(); });
+// prevent modal content click from bubbling to backdrop
+$(".gbox").addEventListener("click", e=> e.stopPropagation());
+
+// on-screen dpad (pointerdown only to avoid double-fire with click)
+document.querySelectorAll("#dpad button").forEach(btn=>{
+  btn.addEventListener("pointerdown", e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const dx=parseInt(btn.getAttribute("data-dx"),10);
+    const dy=parseInt(btn.getAttribute("data-dy"),10);
+    if(!game.running) startGame();
+    tryMove(dx,dy);
+  });
+});
 
 initControls(); buildActive(); renderCard();
 </script>
